@@ -1,5 +1,10 @@
 package org.vitmarkha;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
 public class App {
 
     public static void main( String[] args ) throws Exception {
@@ -12,12 +17,31 @@ public class App {
 //        System.out.println(Arrays.toString(Training.twoSumFastWithSort(new int[]{2, 1, 3, 5, 5}, 8)));
 //        System.out.println(Arrays.toString(Training.twoSumFastWithCreateMap(new int[]{2, 1, 3, 5, 4}, 5)));
 //        System.out.println(Arrays.toString(Training.twoSumFastWithGenerateMap(new int[]{2, 1, 3, 5, 4}, 4)));
+//        System.out.println(Training.findNumberByArray(new int[] {5,3,7,2,8,1}, 2));
+//        System.out.println(Training.bestVisitor(new int[] {0,2,3,2,0,4,1,1,2,4,1,1,3,3,3,3,3}, 5));
+//        Training.countGenomeSlow(new char[] {'C', 'C', 'A', 'T', 'G', 'A', 'T', 'C'}, 5, 7, 'C');
+//        Training.countGenomeFast(new char[] {'C', 'C', 'A', 'T', 'G', 'A', 'T', 'C'}, 5, 7);
+//        System.out.println(Training.isSimpleSlow(13));
+//        System.out.println(Training.isSimpleFast(13));
 
         //Задачи
 //        Solution.zipper();
 //        Solution.movingAverageFastTask();
 //        Solution.twoChips();
 //        Solution.twoChipsFast();
+//        Solution.functionValues();
+//        Solution.evenAndOddNumbers();
+//        Solution.neighbours();
+//        Solution.randomWeather();
+//        Solution.longestWord();
+//        Solution.palindrome();
+//        Solution.workFromHome();
+//        Solution.binarySystem();
+//        Solution.powerOfFour();
+//        Solution.factorization();
+//        Solution.listForm();
+//        Solution.extraLetter();
+
         System.out.println("\nEnd program!");
     }
 }
