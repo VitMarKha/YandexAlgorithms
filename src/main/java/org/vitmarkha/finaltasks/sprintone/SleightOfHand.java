@@ -12,20 +12,18 @@ public class SleightOfHand {
     public static void main(String[] args) throws IOException {
         //input
         final int k;
-        final int[][] field;
+        final int[] buttonLine;
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             k = readIntValue(reader) * 2; //умножаю на два, так как игрока 2
-            field = readCharField(reader, LEN_Y, LEN_X);
+            buttonLine = readCharField(reader, LEN_Y, LEN_X);
         }
 
         //program
         int result = 0;
         int[] countT = new int[10];
 
-        for (int i = 0; i < LEN_Y; i++) { //подсчитываю кол-во каждого элемента на поле
-            for (int j = 0; j < LEN_X; j++) {
-                countT[field[i][j]] += 1;
-            }
+        for (int i = 0; i < buttonLine.length; i++) { //подсчитываю кол-во каждого элемента на поле
+            countT[buttonLine[i]] += 1;
         }
 
         for (int i = 1; i < countT.length; i++) { //считаю кол-во возможных побед, кроме 0, так как '.' я заменял на 0
@@ -42,18 +40,15 @@ public class SleightOfHand {
         return Integer.parseInt(reader.readLine());
     }
 
-    private static int[][] readCharField(BufferedReader reader, int lenY, int lenX) throws IOException {
-        int[][] result = new int[lenY][lenX];
+    private static int[] readCharField(BufferedReader reader, int lenY, int lenX) throws IOException {
+        int[] result = new int[lenY * lenX];
+        StringBuilder line = new StringBuilder();
 
-        for (int i = 0; i < lenY; i++) {
-            String line = reader.readLine();
-            for (int j = 0; j < lenX; j++) {
-                if (line.charAt(j) == '.')
-                    result[i][j] = 0;
-                else
-                    result[i][j] = Integer.parseInt(String.valueOf(line.charAt(j)));
-            }
-        }
+        for (int i = 0; i < lenY; i++)
+            line.append(reader.readLine());
+
+        for (int i = 0; i <line.length(); i++)
+            result[i] = line.charAt(i) == '.' ? 0 : line.charAt(i) - '0';
         return result;
     }
 }
