@@ -6,6 +6,105 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    ///////////////////Заботливая мама///////////////////
+    public static int caringMother(App.Node<String> head, String elem) {
+        int index = 0;
+
+        while (head != null) {
+            if (head.value.equals(elem))
+                return index;
+            head = head.next;
+            index += 1;
+        }
+        return -1;
+    }
+
+    ///////////////////Нелюбимое дело///////////////////
+    public static App.Node<String> unlovedBusiness(App.Node<String> head, int idx) {
+        App.Node<String> pointer = head;
+        int delete = 1;
+
+        if (idx == 0)
+            return head.next;
+
+        if (idx == lenList(head))
+            delete = 2;
+
+        for (int i = 0; i < idx - delete; i++)
+            pointer = pointer.next;
+
+        pointer.next = pointer.next.next;
+        return head;
+    }
+
+    private static int lenList(App.Node<String> head) {
+        int len = 0;
+
+        while (head != null) {
+            head = head.next;
+            len += 1;
+        }
+        return len;
+    }
+
+    ///////////////////Список дел///////////////////
+    static class Node<V> {
+        public V value;
+        public Node<V> next;
+
+        public Node(V value, Node<V> next) {
+            this.value = value;
+            this.next = next;
+        }
+    }
+
+    public static void todoList(Node<String> head) {
+        while (head != null) {
+            System.out.println(head.value);
+            head = head.next;
+        }
+    }
+
+    ///////////////////Мониторинг///////////////////
+    public static void monitoring() throws IOException {
+        //input
+        int N;
+        int M;
+        int[][] matrix;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = Integer.parseInt(reader.readLine().strip());
+            M = Integer.parseInt(reader.readLine().strip());
+
+            StringTokenizer tokenizer;
+            matrix = new int[N][M];
+            for (int i = 0; i < N; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                for (int j = 0; j < M; j++)
+                    matrix[i][j] = Integer.parseInt(tokenizer.nextToken());
+            }
+        }
+
+        //program
+        int[][] reversMatrix = new int[M][N];
+
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                reversMatrix[i][j] = matrix[j][i];
+            }
+        }
+
+        //output
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                writer.write(String.valueOf(reversMatrix[i][j]));
+                writer.append(' ');
+            }
+            writer.append('\n');
+        }
+        writer.flush();
+    }
+
     ///////////////////Лишняя буква///////////////////
     public static void extraLetter() throws IOException {
         //input

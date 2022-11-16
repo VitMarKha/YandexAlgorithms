@@ -27,9 +27,8 @@ public class SleightOfHand {
         }
 
         for (int i = 1; i < countT.length; i++) { //считаю кол-во возможных побед, кроме 0, так как '.' я заменял на 0
-            if (countT[i] <= k && countT[i] != 0) {
+            if (countT[i] <= k && countT[i] != 0)
                 result += 1;
-            }
         }
 
         //output
