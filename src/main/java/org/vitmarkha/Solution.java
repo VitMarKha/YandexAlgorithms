@@ -6,8 +6,149 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    ///////////////////Скобочная последовательность///////////////////
+    private static final Map<Character, Character> mapBracket = new HashMap<>();
+
+    static {
+        mapBracket.put('(', ')');
+        mapBracket.put('{', '}');
+        mapBracket.put('[', ']');
+    }
+
+    public static void bracketSequence() throws IOException {
+        //input
+        String line;
+        Stack<Character> stack = new Stack<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            line = reader.readLine().strip();
+
+            for (int i = 0; i < line.length(); i++)
+                stack.push(line.charAt(i));
+        }
+
+        //program and output
+        System.out.println(isBracketSequence(stack));
+    }
+
+    private static String isBracketSequence(Stack<Character> stack) {
+        Stack<Character> buffer = new Stack<>();
+        char bracket;
+
+        while (!stack.isEmpty()) {
+            bracket = stack.pop();
+
+            if (isCloseBracket(bracket))
+                buffer.push(bracket);
+            else if (isOpenBracket(bracket)) {
+                if (buffer.empty() || !compareBracket(bracket, buffer.pop()))
+                    return "False";
+            } else
+                return "False";
+        }
+        return "True";
+    }
+
+    private static boolean compareBracket(char openBracket, char closeBracket) {
+        return mapBracket.get(openBracket).equals(closeBracket);
+    }
+
+    private static boolean isCloseBracket(char ch) {
+        return ch == ')' || ch == ']' || ch == '}';
+    }
+
+    private static boolean isOpenBracket(char ch) {
+        return ch == '(' || ch == '[' || ch == '{';
+    }
+
+    ///////////////////Стек - Max и Стек - MaxEffective///////////////////
+    private static List<Integer> stack = new ArrayList<>();
+    private static List<Integer> stackMax = new ArrayList<>();
+
+    public static void stackMax() throws IOException {
+        //input, output and program
+        int N;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = Integer.parseInt(reader.readLine().strip());
+            StringTokenizer tokenizer;
+
+            for (int i = 0; i < N; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                String command = tokenizer.nextToken();
+                if (command.equals("push")) {
+                    int num = Integer.parseInt(tokenizer.nextToken());
+                    push(num);
+                } else if (command.equals("pop"))
+                    pop();
+                else
+                    get_max();
+            }
+        }
+    }
+
+    private static void push(int num) {
+        if (stackMax.isEmpty() || num >= stackMax.get(stackMax.size() - 1))
+            stackMax.add(num);
+        stack.add(num);
+    }
+
+    private static void pop() {
+        if (stack.isEmpty())
+            System.out.println("error");
+        else {
+            if (!stackMax.isEmpty() && Objects.equals(stack.get(stack.size() - 1), stackMax.get(stackMax.size() - 1)))
+                stackMax.remove(stackMax.size() - 1);
+            stack.remove(stack.size() - 1);
+        }
+    }
+
+    private static void get_max() {
+        if (stack.isEmpty())
+            System.out.println("None");
+        else
+            System.out.println(stackMax.get(stackMax.size() - 1));
+    }
+
+    ///////////////////Всё наоборот///////////////////
+    public static Node2<String> wayAround(Node2<String> head) {
+        Node2<String> pointer = head;
+        int len = 0;
+
+        while (pointer.next != null) {
+            pointer = pointer.next;
+            len += 1;
+        }
+
+        Node2<String> resutlt = new Node2<>(pointer.value, null, null);
+        Node2<String> headResutlt = resutlt;
+        for (int i = 0; i < len; i++) {
+
+            if (pointer.prev != null)
+                resutlt.next = new Node2<>(pointer.prev.value, pointer.prev, pointer.next);
+            if (pointer.next != null)
+                resutlt.prev = new Node2<>(pointer.next.value, pointer.next, pointer.prev);
+
+            resutlt = resutlt.next;
+            pointer = pointer.prev;
+            if (i + 1 == len)
+                resutlt.next = null;
+        }
+        return headResutlt;
+    }
+
+    static class Node2<V> {
+        public V value;
+        public Node2<V> next;
+        public Node2<V> prev;
+
+        public Node2(V value, Node2<V> next, Node2<V> prev) {
+            this.value = value;
+            this.next = next;
+            this.prev = prev;
+        }
+    }
+
     ///////////////////Заботливая мама///////////////////
-    public static int caringMother(App.Node<String> head, String elem) {
+    public static int caringMother(Node<String> head, String elem) {
         int index = 0;
 
         while (head != null) {
@@ -20,8 +161,8 @@ public class Solution {
     }
 
     ///////////////////Нелюбимое дело///////////////////
-    public static App.Node<String> unlovedBusiness(App.Node<String> head, int idx) {
-        App.Node<String> pointer = head;
+    public static Node<String> unlovedBusiness(Node<String> head, int idx) {
+        Node<String> pointer = head;
         int delete = 1;
 
         if (idx == 0)
@@ -37,7 +178,7 @@ public class Solution {
         return head;
     }
 
-    private static int lenList(App.Node<String> head) {
+    private static int lenList(Node<String> head) {
         int len = 0;
 
         while (head != null) {
