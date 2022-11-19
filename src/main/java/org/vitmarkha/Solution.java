@@ -6,6 +6,137 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    ///////////////////Списочная очередь///////////////////
+    private static class Node3<T> {
+        public T value;
+        public Node3<T> next;
+        public Node3<T> prev;
+
+        public Node3(T num, Node3<T> prev, Node3<T> next) {
+            this.value = num;
+            this.prev = prev;
+            this.next = next;
+        }
+    }
+
+    private static Integer size = 0;
+    private static Node3<Integer> first;
+    private static Node3<Integer> last;
+
+    private static final StringBuilder output = new StringBuilder();
+
+    public static void listQueue() throws IOException {
+        //input and program
+        int N;
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = Integer.parseInt(reader.readLine());
+
+            StringTokenizer tokenizer;
+            String command;
+            for (int i = 0; i < N; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                command = tokenizer.nextToken();
+
+                if (command.equals("put"))
+                    listQueuePut(Integer.parseInt(tokenizer.nextToken()));
+                else if (command.equals("get"))
+                    listQueueGet();
+                else
+                    listQueueSize();
+            }
+
+            //output
+            final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+            writer.write(output.toString());
+            writer.flush();
+        }
+    }
+
+    private static void listQueuePut(int num) {
+        if (first == null) {
+            first = new Node3<>(num, null, null);
+            last = new Node3<>(null, null, null);
+            first.next = last;
+            last.prev = first;
+        } else {
+            last.value = num;
+            last.next = new Node3<>(null, last, null);
+            last = last.next;
+        }
+        size += 1;
+    }
+
+    private static void listQueueGet() {
+        if (size > 0) {
+            output.append(first.value).append('\n');
+            first = first.next;
+            size -= 1;
+            if (size == 0)
+                first = null;
+        } else
+            output.append("error\n");
+    }
+
+    private static void listQueueSize() {
+        output.append(size).append('\n');
+    }
+
+    ///////////////////Ограниченная очередь///////////////////
+    private static int maxSize;
+    private static LinkedList<Integer> queue = new LinkedList<>();
+
+    public static void limitedQueue() throws IOException {
+        //input, program and output
+        int N;
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = Integer.parseInt(reader.readLine());
+            maxSize = Integer.parseInt(reader.readLine());
+
+            StringTokenizer tokenizer;
+            String command;
+            for (int i = 0; i < N; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                command = tokenizer.nextToken();
+
+                if (command.equals("push")) {
+                    limitedQueuePush(Integer.parseInt(tokenizer.nextToken()));
+                } else if (command.equals("pop"))
+                    limitedQueuePop();
+                else if (command.equals("peek"))
+                    limitedQueuePeek();
+                else
+                    limitedQueueSize();
+            }
+        }
+    }
+
+    private static void limitedQueuePush(int num) {
+        if (queue.size() < maxSize) {
+            queue.add(num);
+        } else
+            System.out.println("error");
+    }
+
+    private static void limitedQueuePop() {
+        if (queue.size() > 0) {
+            int number = queue.get(0);
+            System.out.println(number);
+            queue.remove(0);
+        } else
+            System.out.println("None");
+    }
+
+    private static void limitedQueuePeek() {
+        if (queue.size() > 0)
+            System.out.println(queue.get(0));
+        else
+            System.out.println("None");
+    }
+
+    private static void limitedQueueSize() {
+        System.out.println(queue.size());
+    }
+
     ///////////////////Скобочная последовательность///////////////////
     private static final Map<Character, Character> mapBracket = new HashMap<>();
 
