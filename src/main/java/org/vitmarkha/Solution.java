@@ -6,6 +6,57 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    ///////////////////Фибоначчи по модулю///////////////////
+    private static int first2;
+    private static int second = 0;
+    private static int fibonacci = 1;
+
+    public static void fibonacciModulo() throws IOException {
+        //input
+        final int N;
+        int K;
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            N = Integer.parseUnsignedInt(tokenizer.nextToken());
+            K = Integer.parseUnsignedInt(tokenizer.nextToken());
+        }
+
+        //program
+        K = (int) Math.pow(10, K);
+        int result = 1;
+
+        for (int i = 0; i < N; i++) {
+            first2 = second % K;
+            second = fibonacci % K;
+            fibonacci = first2 + second;
+            result = fibonacci % K;
+        }
+
+        //output
+        System.out.println(result);
+    }
+
+    ///////////////////Рекурсивные числа Фибоначчи///////////////////
+    public static void recursiveFibonacciNumbers() throws IOException {
+        //input
+        int N;
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = Integer.parseInt(reader.readLine());
+        }
+
+        //program
+        int countCommits = recursiveFibonacciPlus(N);
+
+        //output
+        System.out.println(countCommits);
+    }
+
+    private static int recursiveFibonacciPlus(int n) {
+        if (n == 0 || n == 1)
+            return 1;
+        return recursiveFibonacciPlus(n - 1) + recursiveFibonacciPlus(n - 2);
+    }
+
     ///////////////////Списочная очередь///////////////////
     private static class Node3<T> {
         public T value;

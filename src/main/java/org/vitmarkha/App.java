@@ -48,13 +48,9 @@ public class App {
 //        Solution.bracketSequence();
 //        Solution.limitedQueue();
 //        Solution.listQueue();
-        recursiveFibonacciNumbers();
+//        Solution.recursiveFibonacciNumbers();
+//        Solution.fibonacciModulo();
 
         System.out.println("\nEnd program!");
     }
-
-    public static void recursiveFibonacciNumbers() {
-
-    }
-
 }
