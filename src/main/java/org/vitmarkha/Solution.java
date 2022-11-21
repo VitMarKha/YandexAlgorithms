@@ -17,8 +17,8 @@ public class Solution {
         int K;
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
-            N = Integer.parseUnsignedInt(tokenizer.nextToken());
-            K = Integer.parseUnsignedInt(tokenizer.nextToken());
+            N = Integer.parseInt(tokenizer.nextToken());
+            K = Integer.parseInt(tokenizer.nextToken());
         }
 
         //program
