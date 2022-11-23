@@ -31,14 +31,16 @@ package org.vitmarkha.finaltasks.sprintwo;
 Печать и зануление элемента.
 
 -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
-Добавление в Dec стоит всегда O(1), потому что при добавлении
+Если у нас n команд, то выполнение работы программы будет O(n).
+
+Добавление 1 элемента в Dec стоит всегда O(1), потому что при добавлении
 мы устанавливаем элемент по индексу в массив.
 
-Извлечение из Dec стоит всегда O(1), потому, что
+Извлечение 1 элемента из Dec стоит всегда O(1), потому, что
 происходит это по индексу массива.
 
 -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
-Dec, содержащий n элементов, занимает O(n) памяти,
+Dec, содержащий maxSize элементов, занимает O(maxSize) памяти,
 так как блок памяти для массива выделяется заранее,
 как только мы узнаем maxSize.
 */
@@ -117,9 +119,8 @@ public class Dec {
         if (currentSize <= 0)
             return OptionalInt.empty();
 
-        int value;
         head = head + 1 >= maxSize ? 0 : head + 1;
-        value = buffer[head];
+        int value = buffer[head];
         buffer[head] = null;
         currentSize -= 1;
         return OptionalInt.of(value);
@@ -129,9 +130,8 @@ public class Dec {
         if (currentSize <= 0)
             return OptionalInt.empty();
 
-        int value;
         tail = tail - 1 < 0 ? maxSize - 1 : tail - 1;
-        value = buffer[tail];
+        int value = buffer[tail];
         buffer[tail] = null;
         currentSize -= 1;
         return OptionalInt.of(value);
