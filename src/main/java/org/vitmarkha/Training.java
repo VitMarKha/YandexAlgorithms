@@ -10,6 +10,40 @@ import java.util.StringTokenizer;
 
 public class Training {
 
+    ///////////////////Бинарный поиск рекурсивно///////////////////
+    public static int recursiveBinSearch(int[] array, int number, int min, int max) {
+        if (max <= min)
+            return -1;
+
+        int middle = (min + max) / 2;
+
+        if (array[middle] == number)
+            return middle;
+        else if (number < array[middle])
+            return recursiveBinSearch(array, number, min, middle);
+        else
+            return recursiveBinSearch(array, number, middle + 1, max);
+    }
+
+    ///////////////////Бинарный поиск///////////////////
+    public static int binSearch(int[] array, int num) {
+        int middle;
+        int min = 0;
+        int max = array.length;
+
+        while (min < max) {
+            middle = (min + max) / 2;
+
+            if (array[middle] == num)
+                return middle;
+            else if (num < array[middle])
+                max = middle;
+            else
+                min = middle + 1;
+        }
+        return -1;
+    }
+
     ///////////////////Простое число быстро///////////////////
     public static boolean isSimpleFast(int number) {
         if (number == 1)
