@@ -10,6 +10,16 @@ import java.util.StringTokenizer;
 
 public class Training {
 
+    ///////////////////Все варианты 0 1 по кол-ву n///////////////////
+    public static void printTree(int n, String line) {
+        if (n == 0)
+            System.out.println(line);
+        else {
+            printTree(n - 1, line + "0");
+            printTree(n - 1, line + "1");
+        }
+    }
+
     ///////////////////Бинарный поиск рекурсивно///////////////////
     public static int recursiveBinSearch(int[] array, int number, int min, int max) {
         if (max <= min)

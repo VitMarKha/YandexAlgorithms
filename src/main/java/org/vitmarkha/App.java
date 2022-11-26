@@ -24,6 +24,7 @@ public class App {
 //        int[] array = new int[] {2,3,4,5,6,7,8,9,10,11};
 //        System.out.println(Training.recursiveBinSearch(array, 4, 0,  array.length));
 //        System.out.println(Training.binSearch(array, 4));
+//        Training.printTree(3, "");
 
         //Задачи
 //        Solution.zipper();
@@ -54,7 +55,51 @@ public class App {
 //        Solution.recursiveFibonacciNumbers();
 //        Solution.fibonacciModulo();
 //        Solution.twoBicycles();
+//        Solution.parenthesesGenerator();
+        combinations();
 
         System.out.println("\nEnd program!");
+    }
+
+    private static final Map<Integer, char[]> mapCombination = new HashMap<>();
+
+    static {
+        mapCombination.put(2, new char[]{'a','b','c'});
+        mapCombination.put(3, new char[]{'d','e','f'});
+        mapCombination.put(4, new char[]{'g','h','i'});
+        mapCombination.put(5, new char[]{'j','k','l'});
+        mapCombination.put(6, new char[]{'m','n','o'});
+        mapCombination.put(7, new char[]{'p','q','r', 's'});
+        mapCombination.put(8, new char[]{'t','u','v'});
+        mapCombination.put(9, new char[]{'w','x','y', 'z'});
+    }
+
+    public static void combinations() throws IOException {
+        //input
+        final String combination;
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            combination = reader.readLine();
+        }
+
+        int[] array = new int[combination.length()];
+        for (int i = 0; i < combination.length(); i++) {
+            array[i] = Integer.parseInt(String.valueOf(combination.charAt(i)));
+        }
+
+        //program
+        StringBuilder output = new StringBuilder();
+        recurseCombination(0, array, output, new StringBuilder());
+
+        //output
+        System.out.println(output);
+    }
+
+    private static void recurseCombination(int iterator, int[] array, StringBuilder output, StringBuilder line) {
+        if (iterator == array.length)
+            output.append(line).append(" ");
+        else {
+
+            recurseCombination(iterator + 1, array, output, line);
+        }
     }
 }
