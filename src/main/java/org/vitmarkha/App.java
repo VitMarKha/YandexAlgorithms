@@ -56,50 +56,114 @@ public class App {
 //        Solution.fibonacciModulo();
 //        Solution.twoBicycles();
 //        Solution.parenthesesGenerator();
-        combinations();
+//        Solution.combinations();
+//        Solution.bubble();
+        bigNumber();
 
         System.out.println("\nEnd program!");
     }
 
-    private static final Map<Integer, char[]> mapCombination = new HashMap<>();
-
-    static {
-        mapCombination.put(2, new char[]{'a','b','c'});
-        mapCombination.put(3, new char[]{'d','e','f'});
-        mapCombination.put(4, new char[]{'g','h','i'});
-        mapCombination.put(5, new char[]{'j','k','l'});
-        mapCombination.put(6, new char[]{'m','n','o'});
-        mapCombination.put(7, new char[]{'p','q','r', 's'});
-        mapCombination.put(8, new char[]{'t','u','v'});
-        mapCombination.put(9, new char[]{'w','x','y', 'z'});
-    }
-
-    public static void combinations() throws IOException {
+    public static void bigNumber() throws IOException {
         //input
-        final String combination;
+        final int N;
+        List<String> list = new ArrayList<>();
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            combination = reader.readLine();
-        }
-
-        int[] array = new int[combination.length()];
-        for (int i = 0; i < combination.length(); i++) {
-            array[i] = Integer.parseInt(String.valueOf(combination.charAt(i)));
+            N = Integer.parseInt(reader.readLine());
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            for (int i = 0; i < N; i++)
+                list.add(tokenizer.nextToken());
         }
 
         //program
+        bubbleSortList(list);
+//        Collections.sort(list);
+        System.out.println(list);
         StringBuilder output = new StringBuilder();
-        recurseCombination(0, array, output, new StringBuilder());
+        for (int i = list.size() - 1; i >= 0; i--)
+            output.append(list.get(i));
 
         //output
         System.out.println(output);
     }
 
-    private static void recurseCombination(int iterator, int[] array, StringBuilder output, StringBuilder line) {
-        if (iterator == array.length)
-            output.append(line).append(" ");
-        else {
-
-            recurseCombination(iterator + 1, array, output, line);
-        }
+    private static void bubbleSortList(List<String> list) {
+        for (int j = 0; j < list.size(); j++)
+            for (int i = 0; i < list.size(); i++)
+                if (i + 1 < list.size() && comparator(list.get(i), list.get(i + 1)))
+                    swap(list, i);
     }
+
+    private static void swap(List<String> list, int i) {
+        String tmp = list.get(i + 1);
+        list.set(i + 1, list.get(i));
+        list.set(i, tmp);
+    }
+
+    private static boolean comparator(String s1, String s2) {
+        if (s1.length() == s2.length()) //34 44
+            return Integer.parseInt(s1) > Integer.parseInt(s2);
+
+        if (s1.length() > s2.length()) { //991 8, 15 2
+            for (int i = 0; i < s1.length(); i++) {
+                if (s1.charAt(i) == s2.charAt(0))
+                    continue;
+                if (s1.charAt(i) > s2.charAt(0))
+                    return true;
+            }
+        }
+        if (s1.length() < s2.length()) { //8 991, 2 15
+            for (int i = 0; i < s2.length(); i++) {
+                if (s2.charAt(i) == s1.charAt(0))
+                    continue;
+                if (s2.charAt(i) > s1.charAt(0))
+                    return true;
+            }
+        }
+        return false;
+
+//        if (s1.length() > s2.length()) //95 9
+//        return s1.charAt(s1.length() - 1) > s2.charAt(0);
+
+//        if (s1.length() > s2.length()) {
+//            int max = s1.length();
+//            for (int i = 1; i < max; i++) {
+//                s2 = s2 + "0";
+//            }
+//        } else {
+//            int max = s2.length();
+//            for (int i = 1; i < max; i++) {
+//                s1 = s1 + "0";
+//            }
+//        }
+//        int int1 = Integer.parseInt(s1);
+//        int int2 = Integer.parseInt(s2);
+//        System.out.println("int1 " + int1);
+//        System.out.println("int2 " + int2);
+//        if (int1 > int2)
+//            return true;
+//        else
+//            return false;
+
+        //        if (s1.length() > s2.length()) { //95 9
+//            if (s1.charAt(s1.length() - 1) < s2.charAt(0)) //5 9
+//                return true;
+//            return false;
+//        } else if (s1.length() < s2.length()) { //9 95
+//            if (s2.charAt(s2.length() - 1) < s1.charAt(0)) // 5 9
+//                return true;
+//            return false;
+//        }
+    }
+
+//    private static String getMaxByFirstIndex(List<String> list) {
+//        String max = null;
+//        if (list.isEmpty())
+//            return null;
+//
+//        for (int i = 0; i < list.size(); i++) {
+//            if (max == null || max.charAt(0) < list.get(i).charAt(0))
+//                max = list.get(i);
+//        }
+//        return max;
+//    }
 }

@@ -6,6 +6,102 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    ///////////////////Пузырек///////////////////
+    public static void bubble() throws IOException {
+        //input
+        final int N;
+        int[] array;
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = Integer.parseInt(reader.readLine());
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+
+            array = new int[N];
+            for (int i = 0; i < N; i++)
+                array[i] = Integer.parseInt(tokenizer.nextToken());
+        }
+
+        //program and output
+        if (isArraySorted(array)) {
+            System.out.println(array2String(array));
+            return;
+        }
+
+        for (int j = 0; j < N - 1; j++) {
+            if (isArraySorted(array))
+                break;
+            for (int i = 0; i < array.length; i++) {
+                if (i + 1 < array.length && array[i] > array[i + 1]) {
+                    int tmp = array[i + 1];
+                    array[i + 1] = array[i];
+                    array[i] = tmp;
+                }
+            }
+            System.out.println(array2String(array));
+        }
+    }
+
+    private static String array2String(int[] array) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < array.length; i++) {
+            stringBuilder.append(array[i]).append(" ");
+        }
+        return stringBuilder.toString();
+    }
+
+    private static boolean isArraySorted(int[] array) {
+        for (int i = 0; i < array.length; i++) {
+            if (i + 1 < array.length && array[i] > array[i + 1])
+                return false;
+        }
+        return true;
+    }
+
+    ///////////////////Комбинации///////////////////
+    private static final Map<Integer, char[]> mapCombination = new HashMap<>();
+
+    static {
+        mapCombination.put(2, new char[]{'a','b','c'});
+        mapCombination.put(3, new char[]{'d','e','f'});
+        mapCombination.put(4, new char[]{'g','h','i'});
+        mapCombination.put(5, new char[]{'j','k','l'});
+        mapCombination.put(6, new char[]{'m','n','o'});
+        mapCombination.put(7, new char[]{'p','q','r','s'});
+        mapCombination.put(8, new char[]{'t','u','v'});
+        mapCombination.put(9, new char[]{'w','x','y','z'});
+    }
+
+    public static void combinations() throws IOException {
+        //input
+        final String combination;
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            combination = reader.readLine();
+        }
+
+        int[] array = new int[combination.length()];
+        for (int i = 0; i < combination.length(); i++) {
+            array[i] = Integer.parseInt(String.valueOf(combination.charAt(i)));
+        }
+
+        //program
+        StringBuilder output = new StringBuilder();
+        recurseCombination(array, 0, output, "");
+
+        //output
+        System.out.println(output);
+    }
+
+    private static void recurseCombination(int[] array, int iterator, StringBuilder output, String line) {
+        if (line.length() == array.length)
+            output.append(line).append(" ");
+        else {
+            char[] chars = mapCombination.get(array[iterator]);
+            for (int i = 0; i < chars.length; i++) {
+                recurseCombination(array, iterator + 1, output, line + chars[i]);
+            }
+        }
+    }
+
     ///////////////////Генератор скобок///////////////////
     private static final List<String> list = new ArrayList<>();
 
