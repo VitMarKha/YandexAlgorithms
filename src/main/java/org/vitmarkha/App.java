@@ -58,112 +58,274 @@ public class App {
 //        Solution.parenthesesGenerator();
 //        Solution.combinations();
 //        Solution.bubble();
-        bigNumber();
+//        Solution.bigNumber();
+//        flowerbeds();
+//        subsequence();
+//        merge(new int[]{1,6,8,9,3,5,6},0, 4, 7);
+//        test();
+//        Solution.wrdrobe();
+//        cookies();
+//        Solution.buyingHouses();
+//        Solution.perimeterTriangle();
 
         System.out.println("\nEnd program!");
     }
 
-    public static void bigNumber() throws IOException {
+    public static void cookies() throws IOException {
         //input
         final int N;
-        List<String> list = new ArrayList<>();
+        final int M;
+        final Integer[] kids;
+        final List<Integer> cookies = new ArrayList<>();
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             N = Integer.parseInt(reader.readLine());
             StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+
+            kids = new Integer[N];
             for (int i = 0; i < N; i++)
-                list.add(tokenizer.nextToken());
+                kids[i] = Integer.parseInt(tokenizer.nextToken());
+
+            M = Integer.parseInt(reader.readLine());
+            tokenizer = new StringTokenizer(reader.readLine());
+            for (int i = 0; i < M; i++)
+                cookies.add(Integer.parseInt(tokenizer.nextToken()));
         }
 
         //program
-        bubbleSortList(list);
-//        Collections.sort(list);
-        System.out.println(list);
-        StringBuilder output = new StringBuilder();
-        for (int i = list.size() - 1; i >= 0; i--)
-            output.append(list.get(i));
+        Collections.sort(cookies);
+        int countHappyChildren = 0;
+        for (int i = 0; i < N; i++) {
+            if (cookies.contains(kids[i])) {
+                countHappyChildren += 1;
+                cookies.remove(kids[i]);
+            } else
+                countHappyChildren += findMinCookieByFactor(cookies, kids[i]);
+        }
 
         //output
-        System.out.println(output);
+        System.out.print(countHappyChildren);
     }
 
-    private static void bubbleSortList(List<String> list) {
-        for (int j = 0; j < list.size(); j++)
+    private static int findMinCookieByFactor(List<Integer> cookies, int kidFactor) {
+        for (Integer cookie : cookies) {
+            if (cookie > kidFactor) {
+                cookies.remove(cookie);
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+//    private static int binSearchMinCookieByFactor(List<Integer> cookies, int kidFactor) {
+//        int mid;
+//        int min = 0;
+//        int max = cookies.size();
+//
+//        while (min < max) {
+//            mid = (min + max) / 2;
+//
+//            if (cookies.get(mid) < kidFactor) {
+//                for (int i = mid + 1; i < cookies.size(); i++) {
+//                    if (cookies.get(i) > kidFactor) {
+//                        cookies.remove(mid);
+//                        return 1;
+//                    }
+//                }
+//            }
+//            else if (kidFactor < cookies.get(mid))
+//                max = mid;
+//            else
+//                min = mid + 1;
+//        }
+//        return 0;
+//    }
+
+    public static void test() {
+
+    }
+
+    public static int[] merge(int[] arr, int left, int mid, int right) {
+        int[] result = new int[arr.length];
+        int midOld = mid;
+
+        int i = 0;
+        while (left < midOld && mid < right) {
+            if (arr[left] <= arr[mid]) {
+                result[i] = arr[left];
+                left += 1;
+            } else {
+                result[i] = arr[mid];
+                mid += 1;
+            }
+            i += 1;
+        }
+
+        while (left < midOld) {
+            result[i] = arr[left];
+            left += 1;
+            i += 1;
+        }
+        while (mid < right) {
+            result[i] = arr[mid];
+            mid += 1;
+            i += 1;
+        }
+        return result;
+    }
+
+    public static void merge_sort(int[] arr, int left, int right) {
+        if (right - left <= 1)
+            return;
+
+        int mid = (left + right) / 2;
+
+        merge_sort(arr, 0, mid);
+        merge_sort(arr, mid, right);
+
+        int[] res = merge(arr, left, mid, right);
+        for (int i = left; i < right; i++) {
+            arr[i] = res[i - left];
+        }
+    }
+
+    public static void subsequence() throws IOException {
+        //input
+        String S;
+        String T;
+        final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            S = reader.readLine();
+            T = reader.readLine();
+        }
+
+        //program and output
+        if (isSubsequence(S, T))
+            writer.write("True");
+        else
+            writer.write("False");
+        writer.flush();
+    }
+
+    private static boolean isSubsequence(String S, String T) {
+        char desiredChar;
+        int countCurrentFind = 0;
+        int startIndex = 0;
+        for (int i = 0; i < S.length(); i++) {
+            desiredChar = S.charAt(i);
+
+            for (int j = startIndex; j < T.length(); j++) {
+                if (T.charAt(j) == desiredChar) {
+                    startIndex = j + 1;
+                    countCurrentFind += 1;
+                    break;
+                } else if (T.length() == j + 1)
+                    return false;
+            }
+        }
+        return countCurrentFind == S.length();
+    }
+
+    private static class Flowerbed {
+        public int start;
+        public int end;
+
+        public Flowerbed(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        @Override
+        public String toString() {
+            return start + " " + end;
+        }
+    }
+
+    public static void flowerbeds() throws IOException {
+        //input
+        final int N;
+        List<Flowerbed> segments = new ArrayList<>();
+        StringBuilder output = new StringBuilder();
+        final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = Integer.parseInt(reader.readLine());
+            StringTokenizer tokenizer;
+
+            for (int i = 0; i < N; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                segments.add(new Flowerbed(Integer.parseInt(tokenizer.nextToken()),
+                        Integer.parseInt(tokenizer.nextToken())));
+            }
+        }
+
+        //program
+//        boolean flag = true;
+//        while (flag) {
+//            int reminderLenSegments = segments.size();
+        mergerSegments(segments, 0, 1);
+//            if (reminderLenSegments == segments.size())
+//                flag = false;
+//        }
+        sortSegments(segments);
+
+        //output
+        for (Flowerbed flowerbed : segments)
+            output.append(flowerbed.start).append(" ").append(flowerbed.end).append("\n");
+        writer.write(output.toString());
+        writer.flush();
+    }
+
+    private static void sortSegments(List<Flowerbed> list) {
+        for (int j = 0; j < list.size(); j++) {
             for (int i = 0; i < list.size(); i++)
-                if (i + 1 < list.size() && comparator(list.get(i), list.get(i + 1)))
-                    swap(list, i);
+                if (i + 1 < list.size() && comparatorSegments(list.get(i), list.get(i + 1)))
+                    swapSegments(list, i);
+        }
     }
 
-    private static void swap(List<String> list, int i) {
-        String tmp = list.get(i + 1);
+    private static boolean comparatorSegments(Flowerbed first, Flowerbed second) {
+        return first.start > second.start && first.end > second.end;
+    }
+
+    private static void swapSegments(List<Flowerbed> list, int i) {
+        Flowerbed tmp = list.get(i + 1);
         list.set(i + 1, list.get(i));
         list.set(i, tmp);
     }
 
-    private static boolean comparator(String s1, String s2) {
-        if (s1.length() == s2.length()) //34 44
-            return Integer.parseInt(s1) > Integer.parseInt(s2);
+    private static void mergerSegments(List<Flowerbed> segments, int indexFirst, int indexSecond) {
+        if (segments.size() <= indexFirst || segments.size() <= indexSecond)
+            return;
+        else {
+            for (int i = 0; i < segments.size(); i++) {
+                mergerSegments(segments, i, i + 1);
+            }
 
-        if (s1.length() > s2.length()) { //991 8, 15 2
-            for (int i = 0; i < s1.length(); i++) {
-                if (s1.charAt(i) == s2.charAt(0))
-                    continue;
-                if (s1.charAt(i) > s2.charAt(0))
-                    return true;
+            Flowerbed flowerbedFirst = segments.get(indexFirst);
+            Flowerbed flowerbedSecond = segments.get(indexSecond);
+
+            if (flowerbedFirst.end == flowerbedSecond.end && flowerbedFirst.start == flowerbedSecond.start) {
+                segments.remove(flowerbedFirst);
+//            mergerSegments(segments, indexFirst, indexSecond);
+            }
+            else if (flowerbedFirst.start <= flowerbedSecond.start && flowerbedSecond.end <= flowerbedFirst.end) {
+                segments.remove(flowerbedSecond);
+//            mergerSegments(segments, indexFirst, indexSecond);
+            }
+            else if (flowerbedFirst.end == flowerbedSecond.start && flowerbedFirst.end <= flowerbedSecond.end) {
+                flowerbedSecond.start = flowerbedFirst.start;
+                segments.remove(flowerbedFirst);
+//            mergerSegments(segments, indexFirst, indexSecond);
             }
         }
-        if (s1.length() < s2.length()) { //8 991, 2 15
-            for (int i = 0; i < s2.length(); i++) {
-                if (s2.charAt(i) == s1.charAt(0))
-                    continue;
-                if (s2.charAt(i) > s1.charAt(0))
-                    return true;
-            }
-        }
-        return false;
 
-//        if (s1.length() > s2.length()) //95 9
-//        return s1.charAt(s1.length() - 1) > s2.charAt(0);
 
-//        if (s1.length() > s2.length()) {
-//            int max = s1.length();
-//            for (int i = 1; i < max; i++) {
-//                s2 = s2 + "0";
+//        for (int k = 0; k < segments.size(); k++) {
+
+
+//            for (int i = 0; i < segments.size(); i++) {
+
+
 //            }
-//        } else {
-//            int max = s2.length();
-//            for (int i = 1; i < max; i++) {
-//                s1 = s1 + "0";
-//            }
-//        }
-//        int int1 = Integer.parseInt(s1);
-//        int int2 = Integer.parseInt(s2);
-//        System.out.println("int1 " + int1);
-//        System.out.println("int2 " + int2);
-//        if (int1 > int2)
-//            return true;
-//        else
-//            return false;
-
-        //        if (s1.length() > s2.length()) { //95 9
-//            if (s1.charAt(s1.length() - 1) < s2.charAt(0)) //5 9
-//                return true;
-//            return false;
-//        } else if (s1.length() < s2.length()) { //9 95
-//            if (s2.charAt(s2.length() - 1) < s1.charAt(0)) // 5 9
-//                return true;
-//            return false;
 //        }
     }
-
-//    private static String getMaxByFirstIndex(List<String> list) {
-//        String max = null;
-//        if (list.isEmpty())
-//            return null;
-//
-//        for (int i = 0; i < list.size(); i++) {
-//            if (max == null || max.charAt(0) < list.get(i).charAt(0))
-//                max = list.get(i);
-//        }
-//        return max;
-//    }
 }

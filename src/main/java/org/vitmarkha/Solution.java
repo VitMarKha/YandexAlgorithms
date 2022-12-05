@@ -6,6 +6,140 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    ///////////////////Периметр треугольника///////////////////
+    public static void perimeterTriangle() throws IOException {
+        //input
+        final int N;
+        final List<Integer> segments = new ArrayList<>();
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = Integer.parseInt(reader.readLine());
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+
+            for (int i = 0; i < N; i++)
+                segments.add(Integer.parseInt(tokenizer.nextToken()));
+        }
+
+        //program
+        Collections.sort(segments);
+        int perimeterMax = 0;
+        for (int i = 0; i < segments.size(); i++) {
+            if (segments.size() == i + 1 || segments.size() == i + 2)
+                break;
+            int a = segments.get(i);
+            int b = segments.get(i + 1);
+            int c = segments.get(i + 2);
+
+            if (c < (a + b) && (a + b + c) > perimeterMax)
+                perimeterMax = a + b + c;
+        }
+
+        //output
+        System.out.print(perimeterMax);
+    }
+
+    ///////////////////Покупка домов///////////////////
+    public static void buyingHouses() throws IOException {
+        //input
+        final int N;
+        final int K;
+        final List<Integer> houses = new ArrayList<>();
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            N = Integer.parseInt(tokenizer.nextToken());
+            K = Integer.parseInt(tokenizer.nextToken());
+
+            tokenizer = new StringTokenizer(reader.readLine());
+            for (int i = 0; i < N; i++) {
+                houses.add(Integer.parseInt(tokenizer.nextToken()));
+            }
+        }
+
+        //program
+        Collections.sort(houses);
+        int countHouse = 0;
+        int sum = 0;
+        for (Integer housePrice : houses) {
+            sum += housePrice;
+            if (sum <= K)
+                countHouse += 1;
+            else
+                break;
+        }
+
+        //output
+        System.out.print(countHouse);
+    }
+
+    ///////////////////Гардероб///////////////////
+    public static void wrdrobe() throws IOException {
+        //input
+        int N;
+        int[] arr;
+        StringBuilder output = new StringBuilder();
+        final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = Integer.parseInt(reader.readLine());
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+
+            arr = new int[N];
+            for (int i = 0; i < N; i++)
+                arr[i] = Integer.parseInt(tokenizer.nextToken());
+        }
+
+        //program
+        int[] count = new int[3];
+        for (int i = 0; i < arr.length; i++)
+            count[arr[i]] += 1;
+
+        for (int i = 0; i < count.length; i++)
+            for (int j = 0; j < count[i]; j++)
+                output.append(i).append(" ");
+
+        //output
+        writer.write(output.toString());
+        writer.flush();
+    }
+
+    ///////////////////Большое число///////////////////
+    public static void bigNumber() throws IOException {
+        //input
+        final int N;
+        List<String> list = new ArrayList<>();
+        StringBuilder output = new StringBuilder();
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = Integer.parseInt(reader.readLine());
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            for (int i = 0; i < N; i++)
+                list.add(tokenizer.nextToken());
+        }
+
+        //program
+        bubbleSortList(list);
+        for (int i = list.size() - 1; i >= 0; i--)
+            output.append(list.get(i));
+
+        //output
+        System.out.print(output);
+    }
+
+    private static void bubbleSortList(List<String> list) {
+        for (int j = 0; j < list.size() - 1; j++) {
+            for (int i = 0; i < list.size(); i++)
+                if (i + 1 < list.size() && comparator(list.get(i), list.get(i + 1)))
+                    swap(list, i);
+        }
+    }
+
+    private static void swap(List<String> list, int i) {
+        String tmp = list.get(i + 1);
+        list.set(i + 1, list.get(i));
+        list.set(i, tmp);
+    }
+
+    private static boolean comparator(String s1, String s2) {
+        return Integer.parseInt(s1 + s2) > Integer.parseInt(s2 + s1);
+    }
+
     ///////////////////Пузырек///////////////////
     public static void bubble() throws IOException {
         //input
