@@ -52,7 +52,6 @@ package org.vitmarkha.finaltasks.sprintthird;
 тогда мы будем передавать копию ссылки на память,
 но мне показалось на примитивных типах решение
 выглядит более наглядно.
-
 */
 
 public class SearchInBrokenArray {
