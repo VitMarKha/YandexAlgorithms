@@ -41,7 +41,15 @@ package org.vitmarkha.finaltasks.sprintthird;
 или если массив уже отсортирован, у нас получится O(n^2).
 
 -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
-Программа, держит в памяти n элементов, пространственная сложность O(n).
+Программа, держит в памяти n элементов, постоянная пространственная
+сложность O(n). Но для быстрой сортировки требуется O(log n) пространства стека,
+чтобы отслеживать подмассивы в стратегии разделяй и властвуй.
+
+В среднем и лучшем случае O(n + log n).
+
+В худшем случае, если массив отсортирован или если неправильно будет
+выбираться опорный элемент, пространственная сложность может быть
+O(n) + O(n) пространства стека, то есть O(2n).
 */
 
 import java.io.*;
@@ -82,16 +90,13 @@ public class EfficientQuicksort {
 
         @Override
         public int compareTo(Intern o) {
-            if (this.login.equals(o.login) && this.fine.equals(o.fine) && this.solved.equals(o.solved))
-                return 0;
-
             if (this.solved > o.getSolved())
-                return -1;
-            else if (this.solved.equals(o.getSolved())) {
+                return o.getSolved() - this.solved;
+            if (this.solved.equals(o.getSolved())) {
                 if (this.fine < o.getFine())
-                    return -1;
+                    return this.fine - o.getFine();
                 else if (this.fine > o.getFine())
-                    return 1;
+                    return this.fine - o.getFine();
                 else
                     return this.login.compareTo(o.getLogin());
             }
