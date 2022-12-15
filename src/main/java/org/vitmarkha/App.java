@@ -67,8 +67,37 @@ public class App {
 //        cookies();
 //        Solution.buyingHouses();
 //        Solution.perimeterTriangle();
+        strangeComparison();
+
 
         System.out.println("\nEnd program!");
+    }
+
+    public static void strangeComparison() throws IOException {
+        //input
+        final String str1;
+        final String str2;
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            str1 = reader.readLine();
+            str2 = reader.readLine();
+        }
+
+        //program and output
+        System.out.print(strangeCompare(str1, str2));
+    }
+
+    private static String strangeCompare(final String str1, final String str2) {
+        if (str1.length() != str2.length())
+            return "NO";
+
+        final Map<Character, Character> map = new HashMap<>();
+        for (int i = 0; i < str1.length(); i++) {
+            if ((map.containsKey(str1.charAt(i)) && !map.get(str1.charAt(i)).equals(str2.charAt(i))) ||
+                    (map.containsValue(str2.charAt(i)) && !map.containsKey(str1.charAt(i))))
+                return "NO";
+            map.put(str1.charAt(i), str2.charAt(i));
+        }
+        return "YES";
     }
 
     public static void cookies() throws IOException {
