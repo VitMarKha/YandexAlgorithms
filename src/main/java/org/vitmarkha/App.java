@@ -1,6 +1,7 @@
 package org.vitmarkha;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.util.*;
 
 public class App {
@@ -67,37 +68,33 @@ public class App {
 //        cookies();
 //        Solution.buyingHouses();
 //        Solution.perimeterTriangle();
-        strangeComparison();
-
+//        Solution.strangeComparison();
+        polynomialHash();
 
         System.out.println("\nEnd program!");
     }
 
-    public static void strangeComparison() throws IOException {
+    public static void polynomialHash() throws IOException{
         //input
-        final String str1;
-        final String str2;
+        final int A;
+        final int M;
+        final String S;
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            str1 = reader.readLine();
-            str2 = reader.readLine();
+            A = Integer.parseInt(reader.readLine());
+            M = Integer.parseInt(reader.readLine());
+            S = reader.readLine();
         }
 
-        //program and output
-        System.out.print(strangeCompare(str1, str2));
-    }
-
-    private static String strangeCompare(final String str1, final String str2) {
-        if (str1.length() != str2.length())
-            return "NO";
-
-        final Map<Character, Character> map = new HashMap<>();
-        for (int i = 0; i < str1.length(); i++) {
-            if ((map.containsKey(str1.charAt(i)) && !map.get(str1.charAt(i)).equals(str2.charAt(i))) ||
-                    (map.containsValue(str2.charAt(i)) && !map.containsKey(str1.charAt(i))))
-                return "NO";
-            map.put(str1.charAt(i), str2.charAt(i));
+        //program
+        BigInteger hash = BigInteger.ZERO;
+        BigInteger ABigInteger = BigInteger.valueOf(A);
+        for (int i = 1; i < S.length(); i++) {
+            BigInteger ch = BigInteger.valueOf(S.charAt(i));
+            hash = hash.add(ch.multiply(ABigInteger.pow(i)));
         }
-        return "YES";
+
+        //output
+        System.out.print(hash.mod(BigInteger.valueOf(M)));
     }
 
     public static void cookies() throws IOException {
