@@ -1,7 +1,6 @@
 package org.vitmarkha;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.util.*;
 
 public class App {
@@ -69,32 +68,65 @@ public class App {
 //        Solution.buyingHouses();
 //        Solution.perimeterTriangle();
 //        Solution.strangeComparison();
-        polynomialHash();
+//        Solution.polynomialHash();
+        sum4();
 
+//        System.out.println("tensada".hashCode());
+//        System.out.println("friabili".hashCode());
         System.out.println("\nEnd program!");
     }
 
-    public static void polynomialHash() throws IOException{
+    public static void sum4() throws IOException {
         //input
-        final int A;
-        final int M;
-        final String S;
+        final int N;
+        final int S;
+        final int[] array;
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            A = Integer.parseInt(reader.readLine());
-            M = Integer.parseInt(reader.readLine());
-            S = reader.readLine();
+            N = Integer.parseInt(reader.readLine());
+            S = Integer.parseInt(reader.readLine());
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+
+            array = new int[N];
+            for (int i = 0; i < N; i++)
+                array[i] = Integer.parseInt(tokenizer.nextToken());
         }
 
         //program
-        BigInteger hash = BigInteger.ZERO;
-        BigInteger ABigInteger = BigInteger.valueOf(A);
-        for (int i = 1; i < S.length(); i++) {
-            BigInteger ch = BigInteger.valueOf(S.charAt(i));
-            hash = hash.add(ch.multiply(ABigInteger.pow(i)));
+        Arrays.sort(array);
+        final Set<Integer> history = new HashSet<>();
+        final List<int[]> result = new ArrayList<>();
+        for (int i = 0; i < array.length; i++) {
+            for (int j = i + 1; j < array.length; j++) {
+                for (int k = j + 1; k < array.length; k++) {
+                    int target = S - array[i] - array[j] - array[k];
+
+                    if (history.contains(target)) {
+                        int[] arr = new int[] {target, array[i], array[j], array[k]};
+                        if (!compareInts(result, arr))
+                            result.add(arr);
+                    }
+                }
+            }
+            history.add(array[i]);
         }
+        result.sort((one, two) -> one[0] - two[0] - one[1] - two[1] - one[2] - two[2] - one[3] - two[3]);
 
         //output
-        System.out.print(hash.mod(BigInteger.valueOf(M)));
+        System.out.println(result.size());
+        for (int[] ints: result) {
+            for (int anInt : ints) {
+                System.out.print(anInt + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    private static boolean compareInts(List<int[]> result, int[] arr) {
+        for (int[] ints : result) {
+            if (ints[0] == arr[0] && ints[1] == arr[1] && ints[2] == arr[2] && ints[3] == arr[3])
+                return true;
+        }
+        return false;
     }
 
     public static void cookies() throws IOException {
