@@ -6,6 +6,27 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    ///////////////////Подстроки///////////////////
+    public static void substrings() throws IOException {
+        final String str;
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            str = reader.readLine();
+        }
+
+        int resultLen = 0;
+        for (int i = 0; i < str.length(); i++) {
+            Set<Character> set = new HashSet<>();
+            for (int j = i; j < str.length(); j++) {
+                if (set.contains(str.charAt(j)))
+                    break;
+                set.add(str.charAt(j));
+            }
+            if (resultLen < set.size())
+                resultLen = set.size();
+        }
+        System.out.print(resultLen);
+    }
+
     ///////////////////Полиномиальный хеш///////////////////
     public static void polynomialHash() throws IOException{
         //input
