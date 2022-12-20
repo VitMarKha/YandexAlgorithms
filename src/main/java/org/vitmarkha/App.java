@@ -69,10 +69,10 @@ public class App {
 //        Solution.perimeterTriangle();
 //        Solution.strangeComparison();
 //        Solution.polynomialHash();
-//        sum4();
+        sum4();
 //        sum4String();
 //        Solution.substrings();
-        anagramGrouping();
+//        anagramGrouping();
 
 //        System.out.println("friabili".hashCode());
 //        System.out.println("tensada".hashCode());
