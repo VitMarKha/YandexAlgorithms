@@ -14,8 +14,8 @@ public class SearchSystem {
         String relevantDocuments = searchRelevantDocuments();
         output(relevantDocuments);
 
-        System.out.println(docs);
-        System.out.println(request);
+        //System.out.println(docs);
+        //System.out.println(request);
     }
 
     private static String searchRelevantDocuments() {

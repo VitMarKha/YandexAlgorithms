@@ -72,58 +72,12 @@ public class App {
         sum4();
 //        sum4String();
 //        Solution.substrings();
-//        anagramGrouping();
+//        Solution.anagramGrouping();
+//        Solution.breakMe();
 
 //        System.out.println("friabili".hashCode());
 //        System.out.println("tensada".hashCode());
         System.out.println("\nEnd program!");
-    }
-
-    public static void anagramGrouping() throws IOException {
-        //input
-        final int N;
-        final List<List<Character>> mainList = new ArrayList<>();
-        final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            N = Integer.parseInt(reader.readLine());
-            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
-
-            for (int i = 0; i < N; i++) {
-                String str = tokenizer.nextToken();
-                List<Character> appendList = new ArrayList<>();
-
-                for (int j = 0; j < str.length(); j++)
-                    appendList.add(str.charAt(j));
-
-                Collections.sort(appendList);
-                mainList.add(appendList);
-            }
-        }
-
-        //program
-        StringBuilder output = new StringBuilder();
-        List<List<Integer>> resultList = new ArrayList<>();
-        for (int i = 0; i < mainList.size(); i++) {
-            List<Integer> appendList = new ArrayList<>();
-            appendList.add(i);
-
-            for (int j = 0; j < mainList.size(); j++) {
-                if (mainList.get(i).equals(mainList.get(j)) && mainList.get(i) != mainList.get(j))
-                    appendList.add(j);
-            }
-
-            Collections.sort(appendList);
-            if (!resultList.contains(appendList)) {
-                resultList.add(appendList);
-                for (Integer integer : appendList)
-                    output.append(integer).append(' ');
-                output.append('\n');
-            }
-        }
-
-        //output
-        writer.write(output.toString());
-        writer.flush();
     }
 
     public static void sum4String() throws IOException {
