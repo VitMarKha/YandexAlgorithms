@@ -2,14 +2,11 @@ package org.vitmarkha.finaltasks.sprintfour;
 
 import java.io.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SearchSystem {
 
-    private static final List<Map<String, Integer>> docs = new ArrayList<>();
+    private static final Map<String, Map<Integer, Integer>> docs = new HashMap<>();
     private static final List<Set<String>> requests = new ArrayList<>();
-
-    private static final Map<String, Map<Integer, Integer>> relevanceWords = new HashMap<>();
     private static final Map<Integer, Map<Integer, Integer>> result = new HashMap<>();
 
     private static final StringBuilder output = new StringBuilder();
@@ -17,27 +14,27 @@ public class SearchSystem {
     public static void main(String[] args) throws IOException {
         input();
         countRelevanceDocumentsByRequests();
-        sortMapInRequests();
+        makeMaxRelevanceLine();
         output();
     }
 
-    private static void sortMapInRequests() {
-        for (Map.Entry<Integer, Map<Integer, Integer>> e : result.entrySet()) {
+    private static void makeMaxRelevanceLine() {
+        for (Map.Entry<Integer, Map<Integer, Integer>> entry : result.entrySet()) {
+            Map<Integer, Integer> map = entry.getValue();
 
-            List<Integer> list = e.getValue().entrySet()
-                    .stream()
-                    .sorted(Collections.reverseOrder((x, y) ->  {
-                        if (x.getValue() - y.getValue() == 0)
-                            return y.getKey() - x.getKey();
-                        else
-                            return x.getValue() - y.getValue();
-                    }))
-                    .map(Map.Entry::getKey)
-                    .collect(Collectors.toList());
-            for (int i = 0; i < list.size(); i++) {
-                if (i > 4)
+            for (int i = 0; i < 5; i++) {
+                if (map.size() == 0)
                     break;
-                output.append(list.get(i)).append(' ');
+
+                int keyMaxRelevance = Collections.max(map.keySet(), (x, y) -> {
+                    if (map.get(x) - map.get(y) == 0)
+                        return y - x;
+                    else
+                        return map.get(x) - map.get(y);
+                });
+
+                output.append(keyMaxRelevance + 1).append(' ');
+                map.remove(keyMaxRelevance);
             }
             output.append('\n');
         }
@@ -47,11 +44,11 @@ public class SearchSystem {
         for (int indexRequests = 0; indexRequests < requests.size(); indexRequests++) {
 
             for (String word : requests.get(indexRequests)) {
-                if (!relevanceWords.containsKey(word))
+                if (!docs.containsKey(word))
                     continue;
 
                 if (!result.containsKey(indexRequests)) {
-                    Map<Integer, Integer> map = new HashMap<>(relevanceWords.get(word));
+                    Map<Integer, Integer> map = new HashMap<>(docs.get(word));
                     result.put(indexRequests, map);
                 }
                 else
@@ -62,7 +59,7 @@ public class SearchSystem {
 
     private static void sumMap(int indexRequests, String word) {
         Map<Integer, Integer> resultMap = result.get(indexRequests);
-        Map<Integer, Integer> relevanceWordsMap = relevanceWords.get(word);
+        Map<Integer, Integer> relevanceWordsMap = docs.get(word);
 
         for (Map.Entry<Integer, Integer> map : relevanceWordsMap.entrySet()) {
             if (!resultMap.containsKey(map.getKey()))
@@ -72,20 +69,10 @@ public class SearchSystem {
         }
     }
 
-    private static void wordRelevanceCountByDocuments(String word) {
-        Map<Integer, Integer> map = new HashMap<>();
-
-        for (int indexDoc = 0; indexDoc < docs.size(); indexDoc++) {
-            if (docs.get(indexDoc).containsKey(word)) {
-                map.put(indexDoc + 1, docs.get(indexDoc).get(word));
-                relevanceWords.put(word, map);
-            }
-        }
-    }
-
     private static void input() throws IOException {
         final int N;
         final int M;
+
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             N = Integer.parseInt(reader.readLine());
             parsDocs(N, reader);
@@ -99,33 +86,41 @@ public class SearchSystem {
 
         for (int i = 0; i < N; i++) {
             tokenizer = new StringTokenizer(reader.readLine());
-            Map<String, Integer> map = new HashMap<>();
-            while (tokenizer.hasMoreTokens()) {
-                String str = tokenizer.nextToken();
-                if (!map.containsKey(str))
-                    map.put(str, 1);
-                else
-                    map.put(str, map.get(str) + 1);
-            }
-            docs.add(map);
+
+            while (tokenizer.hasMoreTokens())
+                putMapByWord(tokenizer.nextToken(), i);
+        }
+    }
+
+    private static void putMapByWord(String word, int indexDoc) {
+        Map<Integer, Integer> map;
+
+        if (!docs.containsKey(word)) {
+            map = new HashMap<>();
+            map.put(indexDoc, 1);
+            docs.put(word, map);
+        } else {
+            map = docs.get(word);
+            if (!map.containsKey(indexDoc))
+                map.put(indexDoc, 1);
+            else
+                map.put(indexDoc, map.get(indexDoc) + 1);
         }
     }
 
     private static void parsRequest(final int N, final BufferedReader reader) throws IOException {
         StringTokenizer tokenizer;
-        final Set<String> usedWords = new HashSet<>();
 
         for (int i = 0; i < N; i++) {
             tokenizer = new StringTokenizer(reader.readLine());
             Set<String> set = new HashSet<>();
-            while (tokenizer.hasMoreTokens()) {
-                String str = tokenizer.nextToken();
 
-                if (!usedWords.contains(str)) {
-                    wordRelevanceCountByDocuments(str);
-                    usedWords.add(str);
-                }
-                set.add(str);
+            while (tokenizer.hasMoreTokens()) {
+                String word = tokenizer.nextToken();
+
+                if (set.contains(word))
+                    continue;
+                set.add(word);
             }
             requests.add(set);
         }
