@@ -17,10 +17,11 @@ public class HashTable {
         }
     }
 
-    private static List<Bucket>[] table = new LinkedList[100_000];
+    private static final Integer LEN = 10000019;
+    private static final Integer С = 199;
+    private static final Bucket[] table = new Bucket[LEN];
 
     public static void main(String[] args) throws IOException {
-
         final int N;
 
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
@@ -45,59 +46,48 @@ public class HashTable {
     private static void put(int key, int value) {
         int index = getIndexBucket(key);
 
-        if (isEmptyBucket(index))
-            table[index] = new LinkedList<>(Collections.singletonList(new Bucket(key, value)));
-        else
-            putCollisions(index, key, value);
-    }
+        if (isEmptyBucket(index)) {
+            table[index] = new Bucket(key, value);
+        } else if (!isEmptyBucket(index) && table[index].key.equals(key)) {
+            table[index].value = value;
+        } else {
+            index = searchEmptyBucket(index, key);
 
-    private static void putCollisions(int index, int key, int value) {
-        LinkedList<Bucket> list = (LinkedList<Bucket>) table[index];
-
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).key.equals(key)) {
-                list.get(i).value = value;
-                return;
-            }
+            if (isEmptyBucket(index))
+                table[index] = new Bucket(key, value);
+            else if (!isEmptyBucket(index) && table[index].key.equals(key))
+                table[index].value = value;
         }
-        list.addFirst(new Bucket(key, value));
     }
 
     private static int get(int key) {
         int index = getIndexBucket(key);
 
-        if (isEmptyBucket(index))
-            return -1;
-        return getValueByIndexAndKey(index, key);
-    }
+        if (!isEmptyBucket(index) && table[index].key.equals(key))
+            return table[index].value;
 
-    private static int getValueByIndexAndKey(int index, int findKey) {
-        LinkedList<Bucket> list = (LinkedList<Bucket>) table[index];
+        index = searchEmptyBucket(index, key);
 
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).key.equals(findKey))
-                return list.get(i).value;
-        }
+        if (!isEmptyBucket(index) && table[index].key.equals(key))
+            return table[index].value;
         return -1;
     }
 
     private static int delete(int key) {
         int index = getIndexBucket(key);
 
-        if (isEmptyBucket(index))
-            return -1;
-        return getAndDeleteBucket(index, key);
-    }
+        if (!isEmptyBucket(index) && table[index].key.equals(key)) {
+            int resultValue = table[index].value;
+            table[index] = null;
+            return resultValue;
+        }
 
-    private static int getAndDeleteBucket(int index, int findKey) {
-        LinkedList<Bucket> list = (LinkedList<Bucket>) table[index];
+        index = searchEmptyBucket(index, key);
 
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).key.equals(findKey)) {
-                int resultValue = list.get(i).value;
-                list.remove(i);
-                return resultValue;
-            }
+        if (!isEmptyBucket(index) && table[index].key.equals(key)) {
+            int resultValue = table[index].value;
+            table[index] = null;
+            return resultValue;
         }
         return -1;
     }
@@ -106,18 +96,24 @@ public class HashTable {
         return table[index] == null;
     }
 
+    private static int searchEmptyBucket(int index, int key) {
+        while (!isEmptyBucket(index) && !table[index].key.equals(key))
+            index = getIndexNextBucket(key, index);
+        return index;
+    }
+
+    private static int getIndexNextBucket(Integer key, int index) {
+        return Math.abs((key.hashCode() + С * index) % LEN);
+    }
+
+    private static int getIndexBucket(Integer key) {
+        return Math.abs(key.hashCode() % LEN);
+    }
+
     private static void print(int integer) {
         if (integer == -1)
             System.out.println("None");
         else
             System.out.println(integer);
-    }
-
-    private static int getIndexBucket(int key) {
-        return Math.abs(myHashCode(key) % 100_000);
-    }
-
-    private static int myHashCode(int integer) {
-        return integer * 1997;
     }
 }

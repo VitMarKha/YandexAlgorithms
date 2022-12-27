@@ -6,14 +6,11 @@ import java.util.*;
 public class SearchSystem {
 
     private static final Map<String, Map<Integer, Integer>> docs = new HashMap<>();
-    private static final List<Set<String>> requests = new ArrayList<>();
     private static final Map<Integer, Map<Integer, Integer>> result = new HashMap<>();
-
     private static final StringBuilder output = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         input();
-        countRelevanceDocumentsByRequests();
         makeMaxRelevanceLine();
         output();
     }
@@ -37,35 +34,6 @@ public class SearchSystem {
                 map.remove(keyMaxRelevance);
             }
             output.append('\n');
-        }
-    }
-
-    private static void countRelevanceDocumentsByRequests() {
-        for (int indexRequests = 0; indexRequests < requests.size(); indexRequests++) {
-
-            for (String word : requests.get(indexRequests)) {
-                if (!docs.containsKey(word))
-                    continue;
-
-                if (!result.containsKey(indexRequests)) {
-                    Map<Integer, Integer> map = new HashMap<>(docs.get(word));
-                    result.put(indexRequests, map);
-                }
-                else
-                    sumMap(indexRequests, word);
-            }
-        }
-    }
-
-    private static void sumMap(int indexRequests, String word) {
-        Map<Integer, Integer> resultMap = result.get(indexRequests);
-        Map<Integer, Integer> relevanceWordsMap = docs.get(word);
-
-        for (Map.Entry<Integer, Integer> map : relevanceWordsMap.entrySet()) {
-            if (!resultMap.containsKey(map.getKey()))
-                resultMap.put(map.getKey(), map.getValue());
-            else
-                resultMap.put(map.getKey(), resultMap.get(map.getKey()) + map.getValue());
         }
     }
 
@@ -110,20 +78,31 @@ public class SearchSystem {
 
     private static void parsRequest(final int N, final BufferedReader reader) throws IOException {
         StringTokenizer tokenizer;
+        Set<String> set;
 
-        for (int i = 0; i < N; i++) {
+        for (int indexRequests = 0; indexRequests < N; indexRequests++) {
             tokenizer = new StringTokenizer(reader.readLine());
-            Set<String> set = new HashSet<>();
+            set = new HashSet<>();
 
             while (tokenizer.hasMoreTokens()) {
                 String word = tokenizer.nextToken();
 
-                if (set.contains(word))
+                if (!docs.containsKey(word) || set.contains(word))
                     continue;
+                if (!result.containsKey(indexRequests)) {
+                    Map<Integer, Integer> map = new HashMap<>(docs.get(word));
+                    result.put(indexRequests, map);
+                }
+                else
+                    sumMap(indexRequests, word);
                 set.add(word);
             }
-            requests.add(set);
         }
+    }
+
+    private static void sumMap(int indexRequests, String word) {
+        for (Map.Entry<Integer, Integer> map : docs.get(word).entrySet())
+            result.get(indexRequests).merge(map.getKey(), map.getValue(), Integer::sum);
     }
 
     private static void output() throws IOException {
