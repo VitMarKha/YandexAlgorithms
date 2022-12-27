@@ -1,5 +1,69 @@
 package org.vitmarkha.finaltasks.sprintfour;
 
+/*
+-- ПРИНЦИП РАБОТЫ --
+Реализовал поисковую систему при использовании HashMap.
+
+Релевантность - это кол-во раз, которое встречается слово в документе.
+
+Считываю документы в HashMap<Слово, HashMap<Номер_документа, Релевантность)>>,
+во время считывания я так же подсчитываю кол-во (релевантность) каждого уникального слова.
+
+После, начинаю считывать запросы. Каждое прочитанное слово запроса,
+проверяется на нахождение в документах и в зависимости от нахождения,
+вкладываю информацию в результирующую структуру HashMap<Номер_документа, Релевантность>.
+Когда все слова в запросе проверены, я начинаю вытаскивать в цикле
+не более 5 максимальных элементов в результирующей структуре.
+Добавляю эти элементы в строку output.
+
+-- ДОКАЗАТЕЛЬСТВО КОРРЕКТНОСТИ --
+Структура документов хранит все уникальные слова.
+
+Результирующая структура запроса создается каждый раз новая,
+при потере ссылки на нее, сборщик мусора ее очищает.
+
+Для отбрасывания повторяющихся слов в запросе,
+используется Set repetitionCheck.
+
+Для поиска keyMaxRelevance в структуре запроса, был написан отдельный компоратор.
+После нахождения keyMaxRelevance, мы его удаляем из результирующей структуры,
+что бы найти следующий максимальный ключ.
+
+-- ВРЕМЕННАЯ СЛОЖНОСТЬ --
+Выполнение программы происходит во время считывания запросов
+и завершается по окончанию чтения.
+
+Получение данных из структур, происходит по ключу
+в HashMap и HashSet за O(1). Установка данных в эти
+структуры так же происходит за O(1).
+
+Скорость работы программы зависит от ко-ва документов O(N),
+кол-ва слов в документе O(n), кол-ва запросов O(M) и кол-ва слов в запросе O(m).
+
+Если считать, что все слова в документах и в запросах будут уникальными,
+то это худший вариант на чтение данных: O(N * n * M * m).
+А значит и худший вариант на выполнение программы.
+
+В лучшем и среднем случае документы и запросы имеют одинаковые слова,
+что позволяет быстрее итерироваться по ним за счет пропускания не уникальных слов.
+Это будет O(log N * n * M * m).
+
+Так же у нас есть 5 итераций для поиска максимальных по релевантности ключей,
+но мы их отбрасываем, так как это константа.
+
+-- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
+Программа, держит в памяти n уникальных элементов документов,
+постоянная пространственная сложность O(n). Так как нам нужен
+постоянный доступ к ним для расчета релевантности запросов.
+
+Так же во время выполнения программы, мы временно храним O(log n)
+запросов, после чего сборщик мусора очищает их.
+
+В лучшем и среднем случае, если документы имеют много одинаковых слов O(log n + log n).
+
+В худшем случае, O(n + log n), при уникальности всех слов в документах.
+*/
+
 import java.io.*;
 import java.util.*;
 
@@ -26,11 +90,11 @@ public class SearchSystem {
     private static void parsDocs(final int N, final BufferedReader reader) throws IOException {
         StringTokenizer tokenizer;
 
-        for (int i = 0; i < N; i++) {
+        for (int indexDoc = 0; indexDoc < N; indexDoc++) {
             tokenizer = new StringTokenizer(reader.readLine());
 
             while (tokenizer.hasMoreTokens())
-                putMapByWord(tokenizer.nextToken(), i);
+                putMapByWord(tokenizer.nextToken(), indexDoc);
         }
     }
 
@@ -53,24 +117,24 @@ public class SearchSystem {
     private static String parsRequestAndMakeLine(final int N, final BufferedReader reader) throws IOException {
         StringBuilder output = new StringBuilder();
         StringTokenizer tokenizer;
-        Set<String> set;
+        Set<String> repetitionCheck;
         Map<Integer, Integer> result;
 
         for (int indexRequests = 0; indexRequests < N; indexRequests++) {
             tokenizer = new StringTokenizer(reader.readLine());
-            set = new HashSet<>();
+            repetitionCheck = new HashSet<>();
             result = new HashMap<>();
 
             while (tokenizer.hasMoreTokens()) {
                 String word = tokenizer.nextToken();
 
-                if (!docs.containsKey(word) || set.contains(word))
+                if (!docs.containsKey(word) || repetitionCheck.contains(word))
                     continue;
                 if (result.isEmpty())
                     result.putAll(docs.get(word));
                 else
                     sumMap(word, result);
-                set.add(word);
+                repetitionCheck.add(word);
             }
             setRequestIndexInLine(output, result);
         }
