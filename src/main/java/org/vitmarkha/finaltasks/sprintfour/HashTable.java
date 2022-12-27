@@ -1,8 +1,6 @@
 package org.vitmarkha.finaltasks.sprintfour;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class HashTable {
@@ -17,9 +15,12 @@ public class HashTable {
         }
     }
 
-    private static final Integer LEN = 10000019;
-    private static final Integer С = 199;
-    private static final Bucket[] table = new Bucket[LEN];
+    private static final int SIMPLE_LEN = 10_000_019;
+    private static final int SIMPLE_INT = 9973;
+
+    private static final Bucket[] table = new Bucket[SIMPLE_LEN];
+
+    private static final StringBuilder output = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         final int N;
@@ -36,84 +37,92 @@ public class HashTable {
                     int value = Integer.parseInt(tokenizer.nextToken());
                     put(key, value);
                 } else if (command.equals("get"))
-                    print(get(Integer.parseInt(tokenizer.nextToken())));
+                    addAnswerInLine(get(Integer.parseInt(tokenizer.nextToken())));
                 else
-                    print(delete(Integer.parseInt(tokenizer.nextToken())));
+                    addAnswerInLine(delete(Integer.parseInt(tokenizer.nextToken())));
             }
         }
+        output();
     }
 
     private static void put(int key, int value) {
-        int index = getIndexBucket(key);
+        int index = hash(key);
 
-        if (isEmptyBucket(index)) {
+        if (isEmptyBucket(index))
             table[index] = new Bucket(key, value);
-        } else if (!isEmptyBucket(index) && table[index].key.equals(key)) {
+        else if (isCellFound(index, key))
             table[index].value = value;
-        } else {
-            index = searchEmptyBucket(index, key);
+        else {
+            index = getEmptyBucket(index, key);
 
             if (isEmptyBucket(index))
                 table[index] = new Bucket(key, value);
-            else if (!isEmptyBucket(index) && table[index].key.equals(key))
+            else if (isCellFound(index, key))
                 table[index].value = value;
         }
     }
 
     private static int get(int key) {
-        int index = getIndexBucket(key);
+        int index = hash(key);
 
-        if (!isEmptyBucket(index) && table[index].key.equals(key))
+        if (isCellFound(index, key))
             return table[index].value;
 
-        index = searchEmptyBucket(index, key);
+        index = getEmptyBucket(index, key);
 
-        if (!isEmptyBucket(index) && table[index].key.equals(key))
+        if (isCellFound(index, key))
             return table[index].value;
         return -1;
     }
 
     private static int delete(int key) {
-        int index = getIndexBucket(key);
+        int index = hash(key);
 
-        if (!isEmptyBucket(index) && table[index].key.equals(key)) {
+        if (isCellFound(index, key)) {
             int resultValue = table[index].value;
             table[index] = null;
             return resultValue;
         }
 
-        index = searchEmptyBucket(index, key);
+        index = getEmptyBucket(index, key);
 
-        if (!isEmptyBucket(index) && table[index].key.equals(key)) {
+        if (isCellFound(index, key)) {
             int resultValue = table[index].value;
             table[index] = null;
             return resultValue;
         }
         return -1;
+    }
+
+    private static int getEmptyBucket(int index, int key) {
+        while (!isEmptyBucket(index) && !table[index].key.equals(key))
+            index += 1;
+        return index;
+    }
+
+    private static boolean isCellFound(int index, int key) {
+        return !isEmptyBucket(index) && table[index].key.equals(key);
     }
 
     private static boolean isEmptyBucket(int index) {
         return table[index] == null;
     }
 
-    private static int searchEmptyBucket(int index, int key) {
-        while (!isEmptyBucket(index) && !table[index].key.equals(key))
-            index = getIndexNextBucket(key, index);
-        return index;
+    private static int hash(Integer key) {
+        return Math.abs((key * SIMPLE_INT) % SIMPLE_LEN);
     }
 
-    private static int getIndexNextBucket(Integer key, int index) {
-        return Math.abs((key.hashCode() + С * index) % LEN);
+    private static void output() throws IOException {
+        final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        writer.write(output.toString());
+        writer.flush();
     }
 
-    private static int getIndexBucket(Integer key) {
-        return Math.abs(key.hashCode() % LEN);
-    }
-
-    private static void print(int integer) {
+    private static void addAnswerInLine(int integer) {
         if (integer == -1)
-            System.out.println("None");
+            output.append("None");
         else
-            System.out.println(integer);
+            output.append(integer);
+        output.append('\n');
     }
 }
