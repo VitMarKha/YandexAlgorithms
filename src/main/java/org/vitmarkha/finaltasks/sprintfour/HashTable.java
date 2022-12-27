@@ -1,5 +1,51 @@
 package org.vitmarkha.finaltasks.sprintfour;
 
+/*
+-- ПРИНЦИП РАБОТЫ --
+Реализовал HashTable методом открытой адресации.
+
+При считывании команд из input, происходит вызов
+функций put, get, delete.
+
+При выполнении команд, рассчитывается хеш по ключу,
+для расчета коллизии происходит переход к следующему
+индексу, по логике работы метода открытой адресации.
+
+-- ДОКАЗАТЕЛЬСТВО КОРРЕКТНОСТИ --
+Заранее задается 2 числа, размер массива SIMPLE_LEN
+и коэффициент для расчета хеша SIMPLE_INT.
+Оба числа простые, для того что бы максимально
+распределить элементы по всему массиву.
+
+В случае с get и delete, проверяется, на не пустую ячейку
+и совпадающий ключ. Если проверку не проходит,
+то в цикле ищем следующую ячейку прибавляя к хешу += 1.
+При нахождении элемента возвращаем его или удаляем.
+При отсутствии возвращаем -1, что сигнализирует
+о добавлении "None" в строку вывода.
+
+В put, же мы с начала проверяем на пустую ячейку,
+только потом на одинаковый ключ. Если не нашли, ищем циклом хеш += 1
+пока не найдем пустую ячейку или пока не найдем одинаковый ключ.
+
+-- ВРЕМЕННАЯ СЛОЖНОСТЬ --
+Все Bucket хранятся в массиве. Получение элемента
+из массива и его установка в массив происходит за O(1).
+
+В лучшем и среднем случа при хорошей распределенности
+по массиву за счет хеш функции, поиск/удаление/вставка
+будет выполняться за O(1).
+
+В худшем случае при не удачном распределении
+поиск будет происходить за O(n), а значит удаление
+и вставка тоже за O(n).
+
+-- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
+В данном задание от нас не требовалось реализовывать
+расширение capacity, по этому на протяжении всей программы
+будет выделено n памяти, постоянная пространственная сложность O(n).
+*/
+
 import java.io.*;
 import java.util.*;
 
@@ -53,7 +99,7 @@ public class HashTable {
         else if (isCellFound(index, key))
             table[index].value = value;
         else {
-            index = getEmptyBucket(index, key);
+            index = searchNextBucket(index, key);
 
             if (isEmptyBucket(index))
                 table[index] = new Bucket(key, value);
@@ -68,7 +114,7 @@ public class HashTable {
         if (isCellFound(index, key))
             return table[index].value;
 
-        index = getEmptyBucket(index, key);
+        index = searchNextBucket(index, key);
 
         if (isCellFound(index, key))
             return table[index].value;
@@ -84,7 +130,7 @@ public class HashTable {
             return resultValue;
         }
 
-        index = getEmptyBucket(index, key);
+        index = searchNextBucket(index, key);
 
         if (isCellFound(index, key)) {
             int resultValue = table[index].value;
@@ -94,7 +140,7 @@ public class HashTable {
         return -1;
     }
 
-    private static int getEmptyBucket(int index, int key) {
+    private static int searchNextBucket(int index, int key) {
         while (!isEmptyBucket(index) && !table[index].key.equals(key))
             index += 1;
         return index;
