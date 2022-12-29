@@ -1,4 +1,4 @@
-package org.vitmarkha.finaltasks.sprintwo;
+package org.fngoc.finaltasks.sprintwo;
 /*
 -- ПРИНЦИП РАБОТЫ --
 Я реализовал Calculator в основе которого лежит стек.

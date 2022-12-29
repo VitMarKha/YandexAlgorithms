@@ -1,4 +1,4 @@
-package org.vitmarkha.finaltasks.sprintfour;
+package org.fngoc.finaltasks.sprintfour;
 
 /*
 -- ПРИНЦИП РАБОТЫ --

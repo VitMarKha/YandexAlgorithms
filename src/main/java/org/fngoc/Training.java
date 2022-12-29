@@ -1,4 +1,4 @@
-package org.vitmarkha;
+package org.fngoc;
 
 import java.io.BufferedReader;
 import java.io.IOException;

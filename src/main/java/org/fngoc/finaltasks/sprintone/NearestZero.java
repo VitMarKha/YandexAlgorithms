@@ -1,4 +1,4 @@
-package org.vitmarkha.finaltasks.sprintone;
+package org.fngoc.finaltasks.sprintone;
 
 import java.io.*;
 import java.util.*;
