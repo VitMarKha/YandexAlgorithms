@@ -6,6 +6,61 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    ///////////////////Дерево поиска///////////////////
+    public static boolean searchTree(NodeSearchTree head) {
+        return check(head, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    private static boolean check(NodeSearchTree root, int min, int max) {
+        if (root == null)
+            return true;
+
+        if (root.value <= min ||root.value >= max)
+            return false;
+        return check(root.left, min, root.value) && check(root.right, root.value, max);
+    }
+
+    private static class NodeSearchTree {
+        int value;
+        NodeSearchTree left;
+        NodeSearchTree right;
+
+        NodeSearchTree(int value) {
+            this.value = value;
+            this.left = null;
+            this.right = null;
+        }
+
+        NodeSearchTree(int value, NodeSearchTree left, NodeSearchTree right) {
+            this.value = value;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    ///////////////////Лампочки///////////////////
+    public static int lightBulbs(NodeLightBulbs head) {
+        if (head.left != null && head.right != null)
+            return Math.max(head.value, Math.max(lightBulbs(head.left), lightBulbs(head.right)));
+        else if (head.left != null)
+            return Math.max(head.value, lightBulbs(head.left));
+        else if (head.right != null)
+            return Math.max(head.value, lightBulbs(head.right));
+        return head.value;
+    }
+
+    private static class NodeLightBulbs {
+        int value;
+        NodeLightBulbs left;
+        NodeLightBulbs right;
+
+        NodeLightBulbs(int value) {
+            this.value = value;
+            this.left = null;
+            this.right = null;
+        }
+    }
+
     ///////////////////Сломай меня///////////////////
     public static void breakMe() throws IOException {
         //pgifrsy
@@ -278,7 +333,7 @@ public class Solution {
     }
 
     ///////////////////Гардероб///////////////////
-    public static void wrdrobe() throws IOException {
+    public static void wardrobe() throws IOException {
         //input
         int N;
         int[] arr;

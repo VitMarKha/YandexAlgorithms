@@ -62,22 +62,36 @@ public class App {
 //        flowerbeds();
 //        subsequence();
 //        merge(new int[]{1,6,8,9,3,5,6},0, 4, 7);
-//        test();
-//        Solution.wrdrobe();
+//        Solution.wardrobe();
 //        cookies();
 //        Solution.buyingHouses();
 //        Solution.perimeterTriangle();
 //        Solution.strangeComparison();
 //        Solution.polynomialHash();
-        sum4();
+//        sum4();
 //        sum4String();
 //        Solution.substrings();
 //        Solution.anagramGrouping();
 //        Solution.breakMe();
-
 //        System.out.println("friabili".hashCode());
 //        System.out.println("tensada".hashCode());
+//        Solution.lightBulbs();
+//        Solution.searchTree();
+
+        differentSearchTrees(15);
+        System.out.println(set.size());
+        System.out.println(set);
+
         System.out.println("\nEnd program!");
+    }
+
+    private static Set<Integer> set = new HashSet<>();
+
+    public static void differentSearchTrees(int n) {
+        if (n != 0) {
+            set.add(n);
+            differentSearchTrees(n - 1);
+        }
     }
 
     public static void sum4String() throws IOException {
@@ -243,10 +257,6 @@ public class App {
 //        }
 //        return 0;
 //    }
-
-    public static void test() {
-
-    }
 
     public static int[] merge(int[] arr, int left, int mid, int right) {
         int[] result = new int[arr.length];
