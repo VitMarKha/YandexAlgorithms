@@ -77,21 +77,11 @@ public class App {
 //        System.out.println("tensada".hashCode());
 //        Solution.lightBulbs();
 //        Solution.searchTree();
-
-        differentSearchTrees(15);
-        System.out.println(set.size());
-        System.out.println(set);
+//        Solution.differentSearchTrees();
+//        Solution.printRange();
+//        Solution.insert();
 
         System.out.println("\nEnd program!");
-    }
-
-    private static Set<Integer> set = new HashSet<>();
-
-    public static void differentSearchTrees(int n) {
-        if (n != 0) {
-            set.add(n);
-            differentSearchTrees(n - 1);
-        }
     }
 
     public static void sum4String() throws IOException {

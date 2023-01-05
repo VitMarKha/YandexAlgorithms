@@ -1,10 +1,147 @@
 package org.fngoc;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Solution {
+
+    ///////////////////Добавь узел///////////////////
+    public static NodeInsert insert(NodeInsert root, int key) {
+        NodeInsert head = root;
+        recurseInsert(root, key);
+        return head;
+    }
+
+    private static void recurseInsert(NodeInsert root, int key) {
+        if (root == null)
+            return;
+
+        if (key < root.getValue()) {
+            if (root.getLeft() == null)
+                root.setLeft(new NodeInsert(null, null, key));
+            else
+                recurseInsert(root.getLeft(), key);
+        }
+
+        if (key >= root.getValue()) {
+            if (root.getRight() == null)
+                root.setRight(new NodeInsert(null, null, key));
+            else
+                recurseInsert(root.getRight(), key);
+        }
+    }
+
+    private static class NodeInsert {
+        private int value;
+        private NodeInsert left;
+        private NodeInsert right;
+
+        NodeInsert(NodeInsert left, NodeInsert right, int value) {
+            this.left = left;
+            this.right = right;
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public NodeInsert getRight() {
+            return right;
+        }
+
+        public void setRight(NodeInsert right) {
+            this.right = right;
+        }
+
+        public NodeInsert getLeft() {
+            return left;
+        }
+
+        public void setLeft(NodeInsert left) {
+            this.left = left;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+    }
+
+    ///////////////////Выведи диапазон///////////////////
+    public static void printRange(printRangeNode root, int L, int R, BufferedWriter writer) throws IOException {
+        if (root == null)
+            return;
+
+        if (root.getLeft() != null)
+            printRange(root.getLeft(), L, R, writer);
+
+        if (inRange(root.getValue(), L, R))
+            writer.append(String.valueOf(root.getValue())).append("\n");
+
+        if (root.getRight() != null)
+            printRange(root.getRight(), L, R, writer);
+    }
+
+    private static boolean inRange(int value, int L, int R) {
+        return L <= value && value <= R;
+    }
+
+    private static class printRangeNode {
+        private int value;
+        private printRangeNode left;
+        private printRangeNode right;
+
+        printRangeNode(printRangeNode left, printRangeNode right, int value) {
+            this.left = left;
+            this.right = right;
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public printRangeNode getRight() {
+            return right;
+        }
+
+        public void setRight(printRangeNode right) {
+            this.right = right;
+        }
+
+        public printRangeNode getLeft() {
+            return left;
+        }
+
+        public void setLeft(printRangeNode left) {
+            this.left = left;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+    }
+
+    ///////////////////Разные деревья поиска///////////////////
+    private static void differentSearchTrees() throws IOException {
+        //input
+        final BigInteger N;
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = BigInteger.valueOf(Long.parseLong(reader.readLine()));
+        }
+
+        //program and output
+        System.out.println(factorial(N.multiply(BigInteger.TWO)).divide(factorial(N).multiply(factorial(N.add(BigInteger.ONE)))));
+    }
+
+    private static BigInteger factorial(BigInteger n) {
+        if (n.equals(BigInteger.ZERO) || n.equals(BigInteger.ONE))
+            return BigInteger.ONE;
+
+        return factorial(n.subtract(BigInteger.ONE)).multiply(n);
+    }
 
     ///////////////////Дерево поиска///////////////////
     public static boolean searchTree(NodeSearchTree head) {
