@@ -7,6 +7,39 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    ///////////////////Сбалансированное дерево///////////////////
+    private static boolean flag = true;
+
+    public static boolean isBalanceTree(NodeIsBalanceTree head) {
+        recursiveIsBalanceTree(head);
+        return flag;
+    }
+
+    private static int recursiveIsBalanceTree(NodeIsBalanceTree root) {
+        if (root == null || !flag)
+            return 0;
+
+        int leftRootCount = recursiveIsBalanceTree(root.left);
+        int rightRootCount = recursiveIsBalanceTree(root.right);
+
+        if (Math.abs(leftRootCount - rightRootCount) > 1)
+            flag = false;
+
+        return Math.max(leftRootCount, rightRootCount) + 1;
+    }
+
+    private static class NodeIsBalanceTree {
+        int value;
+        NodeIsBalanceTree left;
+        NodeIsBalanceTree right;
+
+        NodeIsBalanceTree(int value) {
+            this.value = value;
+            this.left = null;
+            this.right = null;
+        }
+    }
+
     ///////////////////Добавь узел///////////////////
     public static NodeInsert insert(NodeInsert root, int key) {
         NodeInsert head = root;

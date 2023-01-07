@@ -80,6 +80,7 @@ public class App {
 //        Solution.differentSearchTrees();
 //        Solution.printRange();
 //        Solution.insert();
+//        Solution.isBalanceTree();
 
         System.out.println("\nEnd program!");
     }
