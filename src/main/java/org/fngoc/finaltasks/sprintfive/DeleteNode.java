@@ -12,6 +12,7 @@ public class DeleteNode {
              this.right = right;
              this.value = value;
          }
+
          public int getValue() {
             return value;
          }
@@ -55,8 +56,8 @@ public class DeleteNode {
         test();
     }
 
-    private static Node relative;
-    private static Node relativeFind;
+    private static boolean flag;
+    private static Node relativeNodeRemoved;
 
     public static Node remove(Node root, int key) {
         Node head = root;
@@ -69,36 +70,56 @@ public class DeleteNode {
             return;
 
         if (key < root.getValue()) {
-            relative = root;
+            relativeNodeRemoved = root;
+            flag = false;
             deleteNode(root.getLeft(), key);
         } else if (key > root.getValue()) {
-            relative = root;
+            flag = true;
+            relativeNodeRemoved = root;
             deleteNode(root.getRight(), key);
         }
 
         if (root.getValue() == key) {
-            Node node = getRightMost(root.getLeft());
 
-            if (node.getLeft() != null)
-                relativeFind.setRight(node.getLeft());
+            if (root.getLeft() == null && root.getLeft() == null)
+                root = null;
+            else if (root.getLeft() != null && root.getRight() == null) {
+                if (flag)
+                    relativeNodeRemoved.setRight(root.getLeft());
+                else
+                    relativeNodeRemoved.setLeft(root.getLeft());
+            } else if (root.getLeft() == null && root.getRight() != null) {
+                if (flag)
+                    relativeNodeRemoved.setRight(root.getRight());
+                else
+                    relativeNodeRemoved.setLeft(root.getRight());
+            } else if (root.getLeft() != null && root.getRight() != null) {
+                Node node = getLeftMost(root.getRight());
 
-            node.setLeft(root.getLeft());
-            node.setRight(root.getRight());
-            root = null;
-            if (key < relative.getValue())
-                relative.setLeft(node);
-            else
-                relative.setRight(node);
+                if (node.getRight() != null)
+                    relativeNodeRemoved.setLeft(root.getRight());
+
+                node.setLeft(root.getLeft());
+                node.setRight(root.getRight());
+                root = null;
+
+                if (key < relativeNodeRemoved.getValue())
+                    relativeNodeRemoved.setLeft(node);
+                else
+                    relativeNodeRemoved.setRight(node);
+            }
         }
     }
 
+    private static Node getLeftMost(Node root) {
+        if (root.getLeft() == null)
+            return root;
+        return getLeftMost(root.getLeft());
+    }
+
     private static Node getRightMost(Node root) {
-        if (root.getRight() == null) {
-            relativeFind = root;
-            Node tmp = root;
-            root = null;
-            return tmp;
-        }
+        if (root.getRight() == null)
+            return root;
         return getRightMost(root.getRight());
     }
 }
