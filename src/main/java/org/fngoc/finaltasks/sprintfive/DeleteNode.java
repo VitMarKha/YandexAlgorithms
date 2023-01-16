@@ -1,8 +1,37 @@
 package org.fngoc.finaltasks.sprintfive;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+/*
+-- ПРИНЦИП РАБОТЫ --
+Реализовал функцию удаления ноды из бинарного дерева поиска.
+
+Проход по дереву происходит рекурсивно, поиск удаляемого и
+самого левого элемента тоже рекурсивно.
+
+Есть 3 основных варианта исполнения программы.
+1)Если удаляемый узел не имеет потомков.
+2)Удаляемый узел имеет два потомка.
+3)У удаляемого узла один потомок.
+
+-- ДОКАЗАТЕЛЬСТВО КОРРЕКТНОСТИ --
+1)Если у узла нет потомков - зануляем ноду в зависимости от parentPointer.
+2)Если есть 2 узла - то мы рекурсивно находим самый левый элемент правого дочернего узла.
+Так как самый левый узел либо не имеет узлов, либо имеет только один узел,
+мы запускаем функцию удаления узла рекурсивно, попадая в 3 пункт.
+3)Если есть только один потомок - устанавливаю на место удаляемой ноды его потомка.
+
+Если удаляемая нода является головой без потомков, возвращаем null.
+
+-- ВРЕМЕННАЯ СЛОЖНОСТЬ --
+Так как каждый раз при поиске элемента (или при поиске самого левого элемента)
+мы спускаемся по дереву вниз, то в среднем случае скорость поиска может быть
+O(h), где h - высота дерева.
+
+Само удаление происходит за O(1). Среднее выполнение функции O(h).
+
+-- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
+N - кол-во нод в дереве.
+Постоянная пространственная сложность O(N) ~ O(1).
+*/
 
 public class DeleteNode {
 
@@ -42,22 +71,6 @@ public class DeleteNode {
         }
     }
 
-    public static void main(String[] args) {
-        Node node10 = new Node(null, null, 99);
-        Node node9 = new Node(null, null, 72);
-        Node node8 = new Node(node9, node10, 91);
-        Node node7 = new Node(null, null, 50);
-        Node node6 = new Node(null, null, 32);
-        Node node5 = new Node(null, node6, 29);
-        Node node4 = new Node(null, null, 11);
-        Node node3 = new Node(node7, node8, 65);
-        Node node2 = new Node(node4, node5, 20);
-        Node node1 = new Node(node2, node3, 41);
-
-        BTreePrinter.printNode(node1);
-        BTreePrinter.printNode(remove(node1, 41));
-    }
-
     private static Node parentPointer;
 
     public static Node remove(Node root, int key) {
@@ -95,7 +108,7 @@ public class DeleteNode {
     }
 
     private static void deleting(Node deleteNode, Node node) {
-        if (deleteNode == parentPointer.getLeft())
+        if (deleteNode.getValue() < parentPointer.getValue())
             parentPointer.setLeft(node);
         else
             parentPointer.setRight(node);
@@ -116,85 +129,5 @@ public class DeleteNode {
         if (root.getLeft() == null)
             return root;
         return getMostLeftNode(root.getLeft());
-    }
-
-    private static class BTreePrinter {
-
-        public static void printNode(Node root) {
-            int maxLevel = BTreePrinter.maxLevel(root);
-            printNodeInternal(Collections.singletonList(root), 1, maxLevel);
-        }
-
-        private static void printNodeInternal(List<Node> nodes, int level, int maxLevel) {
-            if (nodes.isEmpty() || BTreePrinter.isAllElementsNull(nodes))
-                return;
-
-            int floor = maxLevel - level;
-            int endgeLines = (int) Math.pow(2, (Math.max(floor - 1, 0)));
-            int firstSpaces = (int) Math.pow(2, (floor)) - 1;
-            int betweenSpaces = (int) Math.pow(2, (floor + 1)) - 1;
-
-            BTreePrinter.printWhitespaces(firstSpaces);
-
-            List<Node> newNodes = new ArrayList<>();
-            for (Node node : nodes) {
-                if (node != null) {
-                    System.out.print(node.value);
-                    newNodes.add(node.left);
-                    newNodes.add(node.right);
-                } else {
-                    newNodes.add(null);
-                    newNodes.add(null);
-                    System.out.print(" ");
-                }
-                BTreePrinter.printWhitespaces(betweenSpaces);
-            }
-            System.out.println("");
-
-            for (int i = 1; i <= endgeLines; i++) {
-                for (int j = 0; j < nodes.size(); j++) {
-                    BTreePrinter.printWhitespaces(firstSpaces - i);
-                    if (nodes.get(j) == null) {
-                        BTreePrinter.printWhitespaces(endgeLines + endgeLines + i + 1);
-                        continue;
-                    }
-
-                    if (nodes.get(j).left != null)
-                        System.out.print("/");
-                    else
-                        BTreePrinter.printWhitespaces(1);
-
-                    BTreePrinter.printWhitespaces(i + i - 1);
-
-                    if (nodes.get(j).right != null)
-                        System.out.print("\\");
-                    else
-                        BTreePrinter.printWhitespaces(1);
-
-                    BTreePrinter.printWhitespaces(endgeLines + endgeLines - i);
-                }
-                System.out.println("");
-            }
-            printNodeInternal(newNodes, level + 1, maxLevel);
-        }
-
-        private static void printWhitespaces(int count) {
-            for (int i = 0; i < count; i++)
-                System.out.print(" ");
-        }
-
-        private static <T extends Comparable<?>> int maxLevel(Node node) {
-            if (node == null)
-                return 0;
-            return Math.max(BTreePrinter.maxLevel(node.left), BTreePrinter.maxLevel(node.right)) + 1;
-        }
-
-        private static <T> boolean isAllElementsNull(List<T> list) {
-            for (Object object : list) {
-                if (object != null)
-                    return false;
-            }
-            return true;
-        }
     }
 }
