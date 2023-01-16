@@ -42,65 +42,7 @@ public class DeleteNode {
         }
     }
 
-    private static void test() {
-//        Node node1 = new Node(null, null, 2);
-//        Node node2 = new Node(node1, null, 3);
-//        Node node3 = new Node(null, node2, 1);
-//        Node node4 = new Node(null, null, 6);
-//        Node node5 = new Node(node4, null, 8);
-//        Node node6 = new Node(node5, null, 10);
-//        Node node7 = new Node(node3, node6, 5);
-//        Node newHead = remove(node7, 10);
-//        System.out.println(newHead.getValue() == 5);
-//        System.out.println(newHead.getRight() == node5);
-//        System.out.println(newHead.getRight().getValue() == 8);
-
-//        Node node10 = new Node(null, null, 8);
-//        Node node9 = new Node(null, null, 6);
-//
-//        Node node8 = new Node(null, null, 4);
-//        Node node7 = new Node(node9, node10, 7);
-//
-//        Node node6 = new Node(null, null, 10);
-//        Node node5 = new Node(node8, node7, 5);
-//
-//        Node node4 = new Node(null, null, 1);
-//        Node node2 = new Node(null, node4, 1);
-//        Node node3 = new Node(node5, node6, 9);
-//        Node node1 = new Node(node2, node3, 3);
-
-//        Node node2 = new Node(null, null, 2);
-//        Node node1 = new Node(null, node2, 1);
-
-//        Node node3 = new Node(null, null, 7);
-//        Node node2 = new Node(null, node3,5);
-//        Node node1 = new Node(node2, null,10);
-
-//        BTreePrinter.printNode(node1);
-//        BTreePrinter.printNode(remove(node1, 3));
-//        BTreePrinter.printNode(remove(node1, 6));
-//        BTreePrinter.printNode(remove(node1, 4));
-
-//        BTreePrinter.printNode(remove(node1, 4));
-//        BTreePrinter.printNode(remove(node1, 5));
-//        BTreePrinter.printNode(remove(node1, 3));
-//        BTreePrinter.printNode(remove(node1, 6));
-//        BTreePrinter.printNode(remove(node1, 7));
-//        BTreePrinter.printNode(remove(node1, 8));
-//        BTreePrinter.printNode(remove(node1, 9));
-//        BTreePrinter.printNode(remove(node1, 10));
-//        10
-//        1 41 2 3
-//        2 20 4 5
-//        3 65 7 8
-//        4 11 -1 -1
-//        5 29 -1 6
-//        6 32 -1 -1
-//        7 50 -1 -1
-//        8 91 9 10
-//        9 72 -1 -1
-//        10 99 -1 -1
-//        41
+    public static void main(String[] args) {
         Node node10 = new Node(null, null, 99);
         Node node9 = new Node(null, null, 72);
         Node node8 = new Node(node9, node10, 91);
@@ -112,122 +54,69 @@ public class DeleteNode {
         Node node2 = new Node(node4, node5, 20);
         Node node1 = new Node(node2, node3, 41);
 
-
         BTreePrinter.printNode(node1);
         BTreePrinter.printNode(remove(node1, 41));
-//        BTreePrinter.printNode(remove(node1, 50));
-//        BTreePrinter.printNode(remove(node1, 65));
-//        BTreePrinter.printNode(remove(node1, 72));
-//        BTreePrinter.printNode(remove(node1, 91));
-//        BTreePrinter.printNode(remove(node1, 20));
-//        BTreePrinter.printNode(remove(node1, 41));
-//        BTreePrinter.printNode(remove(node1, 50));
-//        BTreePrinter.printNode(remove(node1, 99));
-//        BTreePrinter.printNode(remove(node1, 29));
     }
 
-    public static void main(String[] args) {
-        test();
-    }
-
-    private static boolean flagTurn;
-    private static Node parent;
-    private static Node head;
+    private static Node parentPointer;
 
     public static Node remove(Node root, int key) {
-        head = root;
-        parent = root;
+        parentPointer = null;
+        Node deleteNode = searchNode(root, key);
 
-        deleteNode(searchNode(root, key));
-        return head;
+        if (deleteNode == null)
+            return root;
+
+        if (deleteNode.getLeft() == null && deleteNode.getRight() == null) {
+            if (deleteNode != root)
+                deleting(deleteNode, null);
+            else
+                root = null;
+        } else if (deleteNode.getLeft() != null && deleteNode.getRight() != null) {
+            Node mostLeftNodePointer = getMostLeftNode(deleteNode.getRight());
+
+            int tmp = mostLeftNodePointer.getValue();
+            remove(root, tmp);
+            deleteNode.setValue(tmp);
+        } else {
+            Node pointerTmp;
+
+            if (deleteNode.getLeft() != null)
+                pointerTmp = deleteNode.getLeft();
+            else
+                pointerTmp = deleteNode.getRight();
+
+            if (deleteNode != root)
+                deleting(deleteNode, pointerTmp);
+            else
+                root = pointerTmp;
+        }
+        return root;
+    }
+
+    private static void deleting(Node deleteNode, Node node) {
+        if (deleteNode == parentPointer.getLeft())
+            parentPointer.setLeft(node);
+        else
+            parentPointer.setRight(node);
     }
 
     private static Node searchNode(Node root, int key) {
         if (root == null || key == root.getValue())
             return root;
 
-        parent = root;
-        if (key < root.getValue()) {
-            flagTurn = false;
+        parentPointer = root;
+        if (key < root.getValue())
             return searchNode(root.getLeft(), key);
-        }
-        else {
-            flagTurn = true;
-            return searchNode(root.getRight(), key);
-        }
-    }
-
-    private static void deleteNode(Node deleteRoot) {
-        if (deleteRoot == null)
-            return;
-
-        if (deleteRoot.getLeft() == null && deleteRoot.getRight() == null)
-            deleting(deleteRoot,null);
-        else if (deleteRoot.getLeft() == null)
-            deleting(deleteRoot, deleteRoot.getRight());
-        else if (deleteRoot.getRight() == null)
-            deleting(deleteRoot, deleteRoot.getLeft());
         else
-            deletingWithTwoRoot(deleteRoot);
-    }
-
-    private static void deletingWithTwoRoot(Node deleteRoot) {
-        Node mostLeftNode = getMostLeftNode(deleteRoot);
-
-        if (mostLeftNode.getLeft() == null && mostLeftNode.getRight() == null) {
-            deleteRoot.setValue(mostLeftNode.getValue());
-
-            if (parent.getValue() > mostLeftNode.getValue())
-                parent.setLeft(null);
-            else
-                parent.setRight(null);
-        } else {
-            deleteRoot.setValue(mostLeftNode.getValue());
-
-            if (parent.getValue() < mostLeftNode.getValue())
-                parent.setLeft(mostLeftNode.getRight());
-            else
-                parent.setRight(mostLeftNode.getRight());
-        }
-    }
-
-    private static void deleting(Node deleteRoot, Node node) {
-        if (head.getValue() == deleteRoot.getValue()) {
-            if (head.getLeft() != null)
-                head = head.getLeft();
-            else
-                head = head.getRight();
-        } else {
-            if (!flagTurn)
-                parent.setLeft(node);
-            else
-                parent.setRight(node);
-        }
+            return searchNode(root.getRight(), key);
     }
 
     private static Node getMostLeftNode(Node root) {
-        parent = root;
-        Node iterator = root.getRight();
-        while (true) {
-            if (iterator.getLeft() == null)
-                return iterator;
-            parent = iterator;
-            iterator = iterator.getLeft();
-        }
+        if (root.getLeft() == null)
+            return root;
+        return getMostLeftNode(root.getLeft());
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static class BTreePrinter {
 
