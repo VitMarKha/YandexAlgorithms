@@ -27,7 +27,6 @@ package org.fngoc.finaltasks.sprintfive;
 
 -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
 N - кол-во элементов в куче.
-Высота кучи log2N.
 
 Добавление элементов происходит за O(logN), так как
 элементы добавляются по индексу в первую свободную ячейку это O(1),
@@ -44,7 +43,7 @@ N - кол-во элементов в куче.
 N - кол-во стажеров подаваемых на вход программе.
 
 Создается массив с N + 1 размером для всех элементов,
-постоянная пространственная сложность O(N+1) ~ O(1).
+постоянная пространственная сложность O(N+1).
 */
 
 import java.io.*;
@@ -99,13 +98,10 @@ public class PyramidSort {
 
             for (int i = 1; i < N; i++) {
                 tokenizer = new StringTokenizer(reader.readLine());
-                sizeHeap += 1;
-
                 insert(new Intern(
                         tokenizer.nextToken(),
                         Integer.parseInt(tokenizer.nextToken()),
-                        Integer.parseInt(tokenizer.nextToken())), sizeHeap);
-                siftUp(heap, sizeHeap);
+                        Integer.parseInt(tokenizer.nextToken())));
             }
         }
         output();
@@ -115,42 +111,50 @@ public class PyramidSort {
         return one.compareTo(two) < 0;
     }
 
-    public static void insert(Intern intern, int index) {
-        heap[index] = intern;
+    public static void insert(Intern intern) {
+        sizeHeap += 1;
+        heap[sizeHeap] = intern;
+        siftUp(heap, sizeHeap);
     }
 
-    public static int siftUp(Intern[] heap, int idx) {
+    public static void siftUp(Intern[] heap, int idx) {
         int root = idx / 2;
 
-        if (idx == 1 || isFirstBigger(heap[root], heap[idx]))
-            return idx;
+        while (idx != 1) {
+            if (isFirstBigger(heap[root], heap[idx]))
+                return;
 
-        if (isFirstBigger(heap[idx], heap[root])) {
-            Intern tmp = heap[idx];
-            heap[idx] = heap[root];
-            heap[root] = tmp;
+            if (isFirstBigger(heap[idx], heap[root])) {
+                Intern tmp = heap[idx];
+                heap[idx] = heap[root];
+                heap[root] = tmp;
+            }
+            idx = root;
+            root = idx / 2;
         }
-        return siftUp(heap, root);
     }
 
-    public static int siftDown(Intern[] heap, int idx) {
+    public static void siftDown(Intern[] heap, int idx) {
         int left = idx * 2;
         int right = idx * 2 + 1;
         int large = left;
 
-        if (left > sizeHeap)
-            return idx;
+        while (left <= sizeHeap) {
+            if (right <= sizeHeap && isFirstBigger(heap[right], heap[large]))
+                large = right;
 
-        if (right <= sizeHeap && isFirstBigger(heap[right], heap[large]))
-            large = right;
-
-        if (isFirstBigger(heap[large], heap[idx])) {
-            Intern tmp = heap[idx];
-            heap[idx] = heap[large];
-            heap[large] = tmp;
-            return siftDown(heap, large);
+            if (isFirstBigger(heap[large], heap[idx])) {
+                Intern tmp = heap[idx];
+                heap[idx] = heap[large];
+                heap[large] = tmp;
+                idx = large;
+                left = idx * 2;
+                right = idx * 2 + 1;
+                large = left;
+                continue;
+            }
+            break;
         }
-        return idx;
     }
 
     private static Intern popMax(Intern[] heap) {
