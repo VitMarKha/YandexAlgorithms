@@ -81,6 +81,8 @@ public class App {
 //        Solution.printRange();
 //        Solution.insert();
 //        Solution.isBalanceTree();
+//        Solution.buildAdjacencyList();
+//        Solution.convertListOfEdgesToAdjacencyMatrix();
 
         System.out.println("\nEnd program!");
     }

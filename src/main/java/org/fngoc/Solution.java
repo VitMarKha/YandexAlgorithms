@@ -7,6 +7,75 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    ///////////////////Перевести список ребер в матрицу смежности///////////////////
+    public static void convertListOfEdgesToAdjacencyMatrix() throws IOException {
+        //input and program
+        final int V; //вершины
+        final int E; //ребра
+        int[][] adjacencyMatrix; //список смежности
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            V = Integer.parseInt(tokenizer.nextToken());
+            E = Integer.parseInt(tokenizer.nextToken());
+
+            adjacencyMatrix = new int[V][V];
+
+            for (int i = 0; i < E; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                int v1 = Integer.parseInt(tokenizer.nextToken()) - 1;
+                int v2 = Integer.parseInt(tokenizer.nextToken()) - 1;
+
+                adjacencyMatrix[v1][v2] += 1;
+            }
+        }
+
+        //output
+        for (int[] matrix : adjacencyMatrix) {
+            for (int i : matrix)
+                System.out.print(i + " ");
+            System.out.println();
+        }
+    }
+
+    ///////////////////Построить список смежности///////////////////
+    public static void buildAdjacencyList() throws IOException {
+        //input and program
+        final int V; //вершины
+        final int E; //ребра
+        List<Integer>[] adjacencyList; //список смежности
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            V = Integer.parseInt(tokenizer.nextToken());
+            E = Integer.parseInt(tokenizer.nextToken());
+
+            adjacencyList = new ArrayList[V];
+
+            for (int i = 0; i < E; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                int v1 = Integer.parseInt(tokenizer.nextToken()) - 1;
+                int v2 = Integer.parseInt(tokenizer.nextToken());
+
+                if (adjacencyList[v1] == null) {
+                    adjacencyList[v1] = new ArrayList<>();
+                    adjacencyList[v1].add(v2);
+                } else
+                    adjacencyList[v1].add(v2);
+            }
+        }
+
+        //output
+        for (List<Integer> integers : adjacencyList) {
+            if (integers == null)
+                System.out.println(0);
+            else {
+                System.out.print(integers.size() + " ");
+                for (Integer integer : integers)
+                    System.out.print(integer + " ");
+                System.out.println();
+            }
+        }
+    }
+
     ///////////////////Просеивание вниз///////////////////
     public static int siftDown(int[] heap, int idx) {
         int left = idx * 2;
