@@ -7,6 +7,356 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    ///////////////////Компоненты связности///////////////////
+    private static int V3; //ко-во вершины
+    private static int E3; //ко-во ребер
+    private static Map<Integer, List<Integer>> vertexes3; //список смежности
+    private static Map<Integer, Set<Integer>> result3;
+    private static int[] colors3;
+
+    private static int countSegment = 1;
+
+    public static void connectivityComponents() throws IOException {
+        inputConnectivityComponents();
+        mainConnectivityComponentsDFS();
+        outputConnectivityComponents();
+    }
+
+    private static void putResult(int v) {
+        if (result3.containsKey(countSegment)) {
+            result3.get(countSegment).add(v);
+        } else {
+            Set<Integer> list = new TreeSet<>();
+            list.add(v);
+            result3.put(countSegment, list);
+        }
+    }
+
+    private static void mainConnectivityComponentsDFS() throws IOException {
+        for (int i = 1; i < V3 + 1; i++) {
+            if (colors3[i] == 0) {
+                connectivityComponentsDFS(i, vertexes3.get(i));
+                countSegment += 1;
+            }
+        }
+    }
+
+    private static void connectivityComponentsDFS(int v, List<Integer> list) {
+        colors3[v] = countSegment;
+        if (list != null) {
+            for (int node : list) {
+                if (colors3[node] == 0)
+                    connectivityComponentsDFS(node, vertexes3.get(node));
+            }
+        }
+        colors3[v] = countSegment;
+        putResult(v);
+    }
+
+    private static void outputConnectivityComponents() throws IOException {
+        final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringBuilder output = new StringBuilder();
+        output.append(countSegment - 1).append("\n");
+
+        for (Map.Entry entry : result3.entrySet()) {
+            for (Integer integer : (Set<Integer>) entry.getValue()) {
+                output.append(integer).append(" ");
+            }
+            output.append("\n");
+        }
+        writer.write(output.toString());
+        writer.flush();
+    }
+
+    private static void inputConnectivityComponents() throws IOException {
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            V3 = Integer.parseInt(tokenizer.nextToken());
+            E3 = Integer.parseInt(tokenizer.nextToken());
+
+            colors3 = new int[V3 + 1];
+            vertexes3 = new HashMap<>();
+            result3 = new HashMap<>();
+
+            for (int i = 0; i < E3; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+
+                int v1 = Integer.parseInt(tokenizer.nextToken());
+                int v2 = Integer.parseInt(tokenizer.nextToken());
+
+                if (!vertexes3.containsKey(v1) && !vertexes3.containsKey(v2)) {
+                    List<Integer> listv1 = new ArrayList<>();
+                    List<Integer> listv2 = new ArrayList<>();
+                    listv1.add(v2);
+                    listv2.add(v1);
+                    vertexes3.put(v1, listv1);
+                    vertexes3.put(v2, listv2);
+                } else if (vertexes3.containsKey(v1) && !vertexes3.containsKey(v2)) {
+                    vertexes3.get(v1).add(v2);
+                    List<Integer> listv2 = new ArrayList<>();
+                    listv2.add(v1);
+                    vertexes3.put(v2, listv2);
+                } else if (!vertexes3.containsKey(v1) && vertexes3.containsKey(v2)) {
+                    vertexes3.get(v2).add(v1);
+                    List<Integer> listv1 = new ArrayList<>();
+                    listv1.add(v2);
+                    vertexes3.put(v1, listv1);
+                } else {
+                    vertexes3.get(v1).add(v2);
+                    vertexes3.get(v2).add(v1);
+                }
+            }
+        }
+    }
+
+    ///////////////////Топологическая сортировка///////////////////
+    public static void topSort() throws IOException {
+        inputTopSort();
+        mainTopSortDFS();
+        outputTopSort();
+    }
+
+    private static List<Integer> stackResult; //отсортированный граф
+    private static int V2; //ко-во вершины
+    private static int E2; //ко-во ребер
+    private static Map<Integer, List<Integer>> vertexes2; //список смежности
+    private static int[] colors2;
+
+    private static void mainTopSortDFS() throws IOException {
+        for (int i = 1; i < V2 + 1; i++) {
+            if (colors2[i] == 0)
+                topSort(i, vertexes2.get(i));
+        }
+    }
+
+    private static void topSort(int v, List<Integer> list) {
+        colors2[v] = 1;
+        if (list != null) {
+            for (int node : list) {
+                if (colors2[node] == 0)
+                    topSort(node, vertexes2.get(node));
+            }
+        }
+        colors2[v] = 2;
+        stackResult.add(v);
+    }
+
+    private static void outputTopSort() throws IOException {
+        final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringBuilder output = new StringBuilder();
+        for (int i = stackResult.size() - 1; i >= 0; i--) {
+            output.append(stackResult.get(i)).append(" ");
+        }
+        writer.write(output.toString());
+        writer.flush();
+    }
+
+    private static void inputTopSort() throws IOException {
+        //input
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            V2 = Integer.parseInt(tokenizer.nextToken());
+            E2 = Integer.parseInt(tokenizer.nextToken());
+
+            stackResult = new ArrayList<>();
+            vertexes2 = new HashMap<>();
+            colors = new int[V2 + 1];
+
+            for (int i = 0; i < E2; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+
+                int v1 = Integer.parseInt(tokenizer.nextToken());
+                int v2 = Integer.parseInt(tokenizer.nextToken());
+
+                if (vertexes2.containsKey(v1))
+                    vertexes2.get(v1).add(v2);
+                else {
+                    List<Integer> list = new ArrayList<>();
+                    list.add(v2);
+                    vertexes2.put(v1, list);
+                }
+            }
+        }
+    }
+
+    ///////////////////Время выходить///////////////////
+    public static void timeToGoOut() throws IOException {
+        inputGraphTimeToGoOut();
+        mainDFS();
+    }
+
+    private static int V; //ко-во вершины
+    private static int E; //ко-во ребер
+    private static Map<Integer, Set<Integer>> vertexes; //список смежности
+    private static int time = -1;
+    private static int[] timeEntry;
+    private static int[] timeLeave;
+    private static int[] colors;
+
+    private static void mainDFS() throws IOException {
+        if (V > 1) {
+            DFS(1, vertexes.get(1));
+            output();
+        } else
+            System.out.println("0 1");
+    }
+
+    private static void DFS(int v, Set<Integer> list) {
+        time += 1;
+        timeEntry[v] = time;
+        colors[v] = 1;
+
+        if (list != null) {
+            for (int node : list) {
+                if (colors[node] == 0)
+                    DFS(node, vertexes.get(node));
+            }
+        }
+
+        time += 1;
+        timeLeave[v] = time;
+        colors[v] = 2;
+    }
+
+    private static void output() throws IOException {
+        final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringBuilder output = new StringBuilder();
+        for (int i = 1; i < V + 1; i++)
+            output.append(timeEntry[i]).append(" ").append(timeLeave[i]).append("\n");
+
+        writer.write(output.toString());
+        writer.flush();
+    }
+
+    private static void inputGraphTimeToGoOut() throws IOException {
+        //input
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            V = Integer.parseInt(tokenizer.nextToken());
+            E = Integer.parseInt(tokenizer.nextToken());
+
+            vertexes = new HashMap<>();
+            timeEntry = new int[V + 1];
+            timeLeave = new int[V + 1];
+            colors = new int[V + 1];
+
+            for (int i = 0; i < E; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+
+                int v1 = Integer.parseInt(tokenizer.nextToken());
+                int v2 = Integer.parseInt(tokenizer.nextToken());
+
+                if (vertexes.containsKey(v1))
+                    vertexes.get(v1).add(v2);
+                else {
+                    Set<Integer> list = new TreeSet<>();
+                    list.add(v2);
+                    vertexes.put(v1, list);
+                }
+            }
+        }
+    }
+
+    ///////////////////DFS///////////////////
+    private static int N;
+
+    private enum Color {
+        WHITE,
+        GREY,
+        BLACK
+    }
+
+    private static final class NodeGraph implements Comparable<NodeGraph> {
+
+        private final int value;
+        private Color color = Color.WHITE;
+        private List<NodeGraph> ribs = new ArrayList<>();
+
+        public NodeGraph(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public Color getColor() {
+            return color;
+        }
+
+        public List<NodeGraph> getRibs() {
+            return ribs;
+        }
+
+        public void setColor(Color color) {
+            this.color = color;
+        }
+
+        @Override
+        public int compareTo(NodeGraph o) {
+            return this.getValue() - o.getValue();
+        }
+    }
+
+    public static void mainDFS(NodeGraph[] nodes) {
+        if (nodes[N] != null)
+            DFS(nodes[N]);
+        else
+            System.out.println(N);
+    }
+
+    private static void DFS(NodeGraph v) {
+        v.setColor(Color.GREY);
+        System.out.print(v.getValue() + " ");
+        Collections.sort(v.getRibs());
+        for (NodeGraph node : v.getRibs()) {
+            if (node.getColor() == Color.WHITE)
+                DFS(node);
+        }
+        v.setColor(Color.BLACK);
+    }
+
+    private static NodeGraph[] inputGraph() throws IOException {
+        //input
+        final int V; //ко-во вершины
+        final int E; //ко-во ребра
+        NodeGraph[] tops; //вершины
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            V = Integer.parseInt(tokenizer.nextToken());
+            E = Integer.parseInt(tokenizer.nextToken());
+
+            tops = new NodeGraph[V + 1];
+
+            for (int i = 0; i < E; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                NodeGraph v1 = new NodeGraph(Integer.parseInt(tokenizer.nextToken()));
+                NodeGraph v2 = new NodeGraph(Integer.parseInt(tokenizer.nextToken()));
+
+                if (tops[v1.getValue()] == null && tops[v2.getValue()] == null) {
+                    tops[v1.getValue()] = v1;
+                    tops[v2.getValue()] = v2;
+                    tops[v1.getValue()].getRibs().add(tops[v2.getValue()]);
+                    tops[v2.getValue()].getRibs().add(tops[v1.getValue()]);
+                } else if (tops[v1.getValue()] != null && tops[v2.getValue()] == null) {
+                    tops[v2.getValue()] = v2;
+                    tops[v1.getValue()].getRibs().add(tops[v2.getValue()]);
+                    tops[v2.getValue()].getRibs().add(tops[v1.getValue()]);
+                } else if (tops[v1.getValue()] == null && tops[v2.getValue()] != null) {
+                    tops[v1.getValue()] = v1;
+                    tops[v1.getValue()].getRibs().add(tops[v2.getValue()]);
+                    tops[v2.getValue()].getRibs().add(tops[v1.getValue()]);
+                } else {
+                    tops[v1.getValue()].getRibs().add(tops[v2.getValue()]);
+                    tops[v2.getValue()].getRibs().add(tops[v1.getValue()]);
+                }
+            }
+            tokenizer = new StringTokenizer(reader.readLine());
+            N = Integer.parseInt(tokenizer.nextToken());
+        }
+        return tops;
+    }
+
     ///////////////////Перевести список ребер в матрицу смежности///////////////////
     public static void convertListOfEdgesToAdjacencyMatrix() throws IOException {
         //input and program
