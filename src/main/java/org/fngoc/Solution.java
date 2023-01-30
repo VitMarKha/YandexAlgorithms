@@ -7,6 +7,171 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    ///////////////////Максимальное расстояние///////////////////
+    private static int V5;
+    private static int E5;
+    private static int S5;
+
+    private static int maxDistant5;
+
+    private static int[] colors5;
+    private static int[] distance5;
+    private static int[] previus5;
+    private static Map<Integer, List<Integer>> vertexes5;
+
+    public static void maxDistance() throws IOException {
+        inputMaxDistance();
+        Queue<Integer> planned = new ArrayDeque<>();
+        planned.add(S5);
+        distance5[S5] = 0;
+
+        while (!planned.isEmpty()) {
+            int parent = planned.remove();
+            colors5[parent] = 1;
+            List<Integer> list = vertexes5.get(parent);
+            if (list == null)
+                continue;
+
+            for (Integer integer : list) {
+                if (colors5[integer] == 0) {
+                    previus5[integer] = parent;
+                    distance5[integer] = distance5[parent] + 1;
+                    colors5[integer] = 1;
+                    if (distance5[integer] > maxDistant5)
+                        maxDistant5 = distance5[integer];
+                    planned.add(integer);
+                }
+            }
+
+            colors5[parent] = 2;
+        }
+
+        System.out.print(maxDistant5);
+    }
+
+    private static void inputMaxDistance() throws IOException {
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            V5 = Integer.parseInt(tokenizer.nextToken());
+            E5 = Integer.parseInt(tokenizer.nextToken());
+
+            colors = new int[V5 + 1];
+            distance5 = new int[V5 + 1];
+            previus5 = new int[V5 + 1];
+            vertexes5 = new HashMap<>();
+
+            for (int i = 0; i < E5; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+
+                int v1 = Integer.parseInt(tokenizer.nextToken());
+                int v2 = Integer.parseInt(tokenizer.nextToken());
+
+                if (!vertexes5.containsKey(v1) && !vertexes5.containsKey(v2)) {
+                    List<Integer> listv1 = new ArrayList<>();
+                    List<Integer> listv2 = new ArrayList<>();
+                    listv1.add(v2);
+                    listv2.add(v1);
+                    vertexes5.put(v1, listv1);
+                    vertexes5.put(v2, listv2);
+                } else if (vertexes5.containsKey(v1) && !vertexes5.containsKey(v2)) {
+                    vertexes5.get(v1).add(v2);
+                    List<Integer> listv2 = new ArrayList<>();
+                    listv2.add(v1);
+                    vertexes5.put(v2, listv2);
+                } else if (!vertexes5.containsKey(v1) && vertexes5.containsKey(v2)) {
+                    vertexes.get(v2).add(v1);
+                    List<Integer> listv1 = new ArrayList<>();
+                    listv1.add(v2);
+                    vertexes5.put(v1, listv1);
+                } else {
+                    vertexes5.get(v1).add(v2);
+                    vertexes5.get(v2).add(v1);
+                }
+            }
+            tokenizer = new StringTokenizer(reader.readLine());
+            S5 = Integer.parseInt(tokenizer.nextToken());
+        }
+    }
+
+    ///////////////////BFS///////////////////
+    private static int V4;
+    private static int E4;
+    private static int S4;
+
+    private static int[] colors4;
+    private static Map<Integer, List<Integer>> vertexes4;
+    private static StringBuilder output4 = new StringBuilder();
+
+    public static void BFS() throws IOException {
+        inputBFS();
+        Queue<Integer> planned = new ArrayDeque<>();
+        planned.add(S4);
+
+        while (!planned.isEmpty()) {
+            int v = planned.remove();
+            colors4[v] = 1;
+            output.append(v).append(" ");
+            List<Integer> list = vertexes4.get(v);
+            if (list == null)
+                continue;
+            Collections.sort(list);
+
+            for (Integer integer : list) {
+                if (colors4[integer] == 0) {
+                    colors4[integer] = 1;
+                    planned.add(integer);
+                }
+            }
+
+            colors4[v] = 2;
+        }
+        final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        writer.write(output.toString());
+        writer.flush();
+    }
+
+    private static void inputBFS() throws IOException {
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            V4 = Integer.parseInt(tokenizer.nextToken());
+            E4 = Integer.parseInt(tokenizer.nextToken());
+
+            colors4 = new int[V4 + 1];
+            vertexes4 = new HashMap<>();
+
+            for (int i = 0; i < E4; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+
+                int v1 = Integer.parseInt(tokenizer.nextToken());
+                int v2 = Integer.parseInt(tokenizer.nextToken());
+
+                if (!vertexes4.containsKey(v1) && !vertexes4.containsKey(v2)) {
+                    List<Integer> listv1 = new ArrayList<>();
+                    List<Integer> listv2 = new ArrayList<>();
+                    listv1.add(v2);
+                    listv2.add(v1);
+                    vertexes4.put(v1, listv1);
+                    vertexes4.put(v2, listv2);
+                } else if (vertexes4.containsKey(v1) && !vertexes4.containsKey(v2)) {
+                    vertexes4.get(v1).add(v2);
+                    List<Integer> listv2 = new ArrayList<>();
+                    listv2.add(v1);
+                    vertexes4.put(v2, listv2);
+                } else if (!vertexes4.containsKey(v1) && vertexes4.containsKey(v2)) {
+                    vertexes4.get(v2).add(v1);
+                    List<Integer> listv1 = new ArrayList<>();
+                    listv1.add(v2);
+                    vertexes4.put(v1, listv1);
+                } else {
+                    vertexes4.get(v1).add(v2);
+                    vertexes4.get(v2).add(v1);
+                }
+            }
+            tokenizer = new StringTokenizer(reader.readLine());
+            S4 = Integer.parseInt(tokenizer.nextToken());
+        }
+    }
+
     ///////////////////Компоненты связности///////////////////
     private static int V3; //ко-во вершины
     private static int E3; //ко-во ребер

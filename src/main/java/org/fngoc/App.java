@@ -87,6 +87,8 @@ public class App {
 //        Solution.timeToGoOut();
 //        Solution.topSort();
 //        Solution.connectivityComponents();
+//        Solution.BFS();
+//        Solution.maxDistance();
 
         System.out.println("\nEnd program!");
     }
