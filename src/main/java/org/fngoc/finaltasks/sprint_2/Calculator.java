@@ -1,4 +1,4 @@
-package org.fngoc.finaltasks.sprintwo;
+package org.fngoc.finaltasks.sprint_2;
 /*
 -- ПРИНЦИП РАБОТЫ --
 Я реализовал Calculator в основе которого лежит стек.

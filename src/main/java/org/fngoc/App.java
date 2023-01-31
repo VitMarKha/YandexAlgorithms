@@ -1,5 +1,7 @@
 package org.fngoc;
 
+import org.fngoc.tasks.Solution;
+
 import java.io.*;
 import java.util.*;
 
@@ -90,7 +92,113 @@ public class App {
 //        Solution.BFS();
 //        Solution.maxDistance();
 
+//        attractions();
+
         System.out.println("\nEnd program!");
+    }
+
+    private static int V; //вершины
+    private static int E; //ребра
+    private static boolean[] visited;
+    private static int[] dist;
+    private static int[] previus;
+
+    private static int[][] adjacencyMatrix; //матрица смежности
+
+    public static void attractions() throws IOException {
+        //input
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            V = Integer.parseInt(tokenizer.nextToken());
+            E = Integer.parseInt(tokenizer.nextToken());
+
+            adjacencyMatrix = new int[V][V];
+            visited = new boolean[V];
+            dist = new int[V];
+            previus = new int[V];
+
+            for (int i = 0; i < E; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                int v1 = Integer.parseInt(tokenizer.nextToken()) - 1;
+                int v2 = Integer.parseInt(tokenizer.nextToken()) - 1;
+                int distant = Integer.parseInt(tokenizer.nextToken());
+
+                adjacencyMatrix[v1][v2] = distant;
+                adjacencyMatrix[v2][v1] = distant;
+            }
+        }
+
+        //program
+        dijkstra();
+
+        //output
+        for (int[] matrix : adjacencyMatrix) {
+            for (int i : matrix)
+                System.out.print(i + " ");
+            System.out.println();
+        }
+    }
+
+    private static void dijkstra() {
+        for (int i = 0; i < V; i++) {
+            dist[i] = Integer.MAX_VALUE;
+            previus[i] = 0;
+            visited[i] = false;
+        }
+
+        while (!isVisitAll(visited)) {
+            int u = getMinDistNotVisitedVertex();
+
+            visited[u] = true;
+
+            int[] neighbours = vertexByHead(u);
+
+            for (int neighbour : neighbours) {
+                if (neighbour != 0)
+                    relax(u, neighbour);
+            }
+        }
+    }
+
+    private static void relax(int u, int neighbour) {
+        if (dist[neighbour] > dist[u] + adjacencyMatrix[u][neighbour]) {
+            dist[neighbour] = dist[u] + adjacencyMatrix[u][neighbour];
+            previus[neighbour] = u;
+            System.out.println(u);
+        }
+    }
+
+    private static boolean isVisitAll(boolean[] visited) {
+        for (int i = 0; i < visited.length; i++) {
+            if (!visited[i] && dist[i] != Integer.MAX_VALUE)
+                return true;
+        }
+        return false;
+    }
+
+    private static Integer getMinDistNotVisitedVertex() {
+        int currentMin = Integer.MAX_VALUE;
+        Integer currentMinVertex = null;
+
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                if (!visited[i] && adjacencyMatrix[i][j] < currentMin) {
+                    currentMin = dist[i];
+                    currentMinVertex = i;
+                }
+            }
+        }
+        return currentMinVertex;
+    }
+
+    private static int[] vertexByHead(int v) {
+        int[] result = new int[V];
+
+        for (int i = 0; i < V; i++) {
+            if (adjacencyMatrix[v][i] != 0)
+                result[i] = i;
+        }
+        return result;
     }
 
     public static void sum4String() throws IOException {
