@@ -1,5 +1,40 @@
 package org.fngoc.finaltasks.sprint_6;
 
+/*
+-- ПРИНЦИП РАБОТЫ --
+Реализовал расчет оптимальности железнодорожных путей.
+
+Оптимальный жд путь - тот что с одним валидным путем по B или R,
+от 1 до столицы n. Для определения не валидного пути,
+достаточно найти цикл в графе, следовательно, нужно
+развернуть один из жд путей в обратную сторону.
+
+-- ДОКАЗАТЕЛЬСТВО КОРРЕКТНОСТИ --
+Считываю ребра графа в список смежности, контейнера map, где
+ключом является номер вершины, а значением массив ребер,
+который хранит номера городов.
+
+Если дорога R, то разворачиваю ребро.
+
+После чего по алгоритму DFS ищу цикл в графе.
+Если цвет вершины серый, значит цикл найден
+и жд не является оптимальной.
+
+-- ВРЕМЕННАЯ СЛОЖНОСТЬ --
+|V| - кол-во вершин.
+|E| - кол-во ребер.
+
+По алгоритму DFS нам необходимо посетить все вершины
+и ребра, следовательно O(|V| + |E|).
+
+-- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
+В реализации графов, через лист смежности
+мы постоянно занимаем O(V + E) памяти.
+
+Так же дополнительно мы храним массив цветов
+всех вершин O(V), но его можно не учитывать.
+*/
+
 import java.io.*;
 import java.util.*;
 
@@ -72,24 +107,28 @@ public class Railways {
                 String line = tokenizer.nextToken();
 
                 for (int j = 0; j < line.length(); j++) {
-                    if (line.charAt(j) == 'B') {
-                        if (vertexes.containsKey(i))
-                            vertexes.get(i).add(i + j + 1);
-                        else {
-                            List<Integer> list = new ArrayList<>();
-                            list.add(i + j + 1);
-                            vertexes.put(i, list);
-                        }
-                    } else if (line.charAt(j) == 'R') {
-                        if (vertexes.containsKey(i + j + 1))
-                            vertexes.get(i + j + 1).add(i);
-                        else {
-                            List<Integer> list = new ArrayList<>();
-                            list.add(i);
-                            vertexes.put(i + j + 1, list);
-                        }
-                    }
+                    putRailway(line.charAt(j), i, j);
                 }
+            }
+        }
+    }
+
+    private static void putRailway(char railway, int cityFrom, int cityOn) {
+        if (railway == 'B') {
+            if (vertexes.containsKey(cityFrom))
+                vertexes.get(cityFrom).add(cityFrom + cityOn + 1);
+            else {
+                List<Integer> list = new ArrayList<>();
+                list.add(cityFrom + cityOn + 1);
+                vertexes.put(cityFrom, list);
+            }
+        } else if (railway == 'R') {
+            if (vertexes.containsKey(cityFrom + cityOn + 1))
+                vertexes.get(cityFrom + cityOn + 1).add(cityFrom);
+            else {
+                List<Integer> list = new ArrayList<>();
+                list.add(cityFrom);
+                vertexes.put(cityFrom + cityOn + 1, list);
             }
         }
     }

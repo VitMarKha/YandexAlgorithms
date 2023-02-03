@@ -133,31 +133,35 @@ public class ExpensiveNetwork {
                 int v2 = Integer.parseInt(tokenizer.nextToken());
                 int weight = Integer.parseInt(tokenizer.nextToken());
 
-                nodeNotAdded.add(v1);
-                nodeNotAdded.add(v2);
-
-                if (!vertexes.containsKey(v1) && !vertexes.containsKey(v2)) {
-                    Set<Edge> set1 = new HashSet<>();
-                    Set<Edge> set2 = new HashSet<>();
-                    set1.add(new Edge(v2, weight));
-                    set2.add(new Edge(v1, weight));
-                    vertexes.put(v1, set1);
-                    vertexes.put(v2, set2);
-                } else if (vertexes.containsKey(v1) && !vertexes.containsKey(v2)) {
-                    vertexes.get(v1).add(new Edge(v2, weight));
-                    Set<Edge> set2 = new HashSet<>();
-                    set2.add(new Edge(v1, weight));
-                    vertexes.put(v2, set2);
-                } else if (!vertexes.containsKey(v1) && vertexes.containsKey(v2)) {
-                    vertexes.get(v2).add(new Edge(v1, weight));
-                    Set<Edge> set1 = new HashSet<>();
-                    set1.add(new Edge(v2, weight));
-                    vertexes.put(v1, set1);
-                } else {
-                    vertexes.get(v1).add(new Edge(v2, weight));
-                    vertexes.get(v2).add(new Edge(v1, weight));
-                }
+                putWay(v1, v2, weight);
             }
+        }
+    }
+
+    private static void putWay(int v1, int v2, int weight) {
+        nodeNotAdded.add(v1);
+        nodeNotAdded.add(v2);
+
+        if (!vertexes.containsKey(v1) && !vertexes.containsKey(v2)) {
+            Set<Edge> set1 = new HashSet<>();
+            Set<Edge> set2 = new HashSet<>();
+            set1.add(new Edge(v2, weight));
+            set2.add(new Edge(v1, weight));
+            vertexes.put(v1, set1);
+            vertexes.put(v2, set2);
+        } else if (vertexes.containsKey(v1) && !vertexes.containsKey(v2)) {
+            vertexes.get(v1).add(new Edge(v2, weight));
+            Set<Edge> set2 = new HashSet<>();
+            set2.add(new Edge(v1, weight));
+            vertexes.put(v2, set2);
+        } else if (!vertexes.containsKey(v1) && vertexes.containsKey(v2)) {
+            vertexes.get(v2).add(new Edge(v1, weight));
+            Set<Edge> set1 = new HashSet<>();
+            set1.add(new Edge(v2, weight));
+            vertexes.put(v1, set1);
+        } else {
+            vertexes.get(v1).add(new Edge(v2, weight));
+            vertexes.get(v2).add(new Edge(v1, weight));
         }
     }
 
