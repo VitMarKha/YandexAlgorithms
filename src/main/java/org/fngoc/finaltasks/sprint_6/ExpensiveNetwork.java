@@ -8,8 +8,8 @@ package org.fngoc.finaltasks.sprint_6;
 Граф храню в списке смежности.
 
 -- ДОКАЗАТЕЛЬСТВО КОРРЕКТНОСТИ --
-Считываю ребра графа в список смежности, контейнера map, где
-ключом является номер вершины, а значением множество уникальных ребер
+Считываю ребра графа в список смежности, массива листов, где
+по индексу массива (номер вершины) находятся все его ребра
 класса Edge, который хранит конец ребра и его вес.
 
 После чего по алгоритму Прима иду с 1 вершины по ребрам с большим весом
@@ -37,9 +37,9 @@ package org.fngoc.finaltasks.sprint_6;
 -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
 В реализации графов, через лист смежности мы постоянно занимаем O(V + E).
 
-Так же дополнительно мы храним множество всех не посещенных вершин за O(V),
-и ребра отдельной вершины, но это можно не учитывать, так как по мере
-выполнения программы элементы удаляются из множеств.
+Так же дополнительно мы храним boolean массив всех
+не посещенных вершин за O(V), и ребра отдельной вершины,
+но это можно не учитывать.
 */
 
 import java.io.BufferedReader;
@@ -76,9 +76,10 @@ public class ExpensiveNetwork {
     private static int V;
     private static int E;
     private static int maxSpanningTree;
-    private static Map<Integer, Set<Edge>> vertexes;
+    private static List<Edge>[] vertexes;
     private static Queue<Edge> edges;
-    private static Set<Integer> nodeNotAdded;
+    private static boolean[] nodeNotAdded;
+    private static int counterNotAddedNode = 0;
 
     public static void main(String[] args) throws IOException {
         input();
@@ -89,10 +90,10 @@ public class ExpensiveNetwork {
     private static void findMST() {
         addVertex(1);
 
-        while (!nodeNotAdded.isEmpty() && !edges.isEmpty()) {
+        while (counterNotAddedNode > 0 && !edges.isEmpty()) {
             Edge edge = getExtractMaxEdge();
 
-            if (nodeNotAdded.contains(edge.getEnd())) {
+            if (nodeNotAdded[edge.getEnd()]) {
                 maxSpanningTree += edge.getWeight();
                 addVertex(edge.getEnd());
             }
@@ -104,14 +105,15 @@ public class ExpensiveNetwork {
     }
 
     private static void addVertex(int v) {
-        nodeNotAdded.remove(v);
+        nodeNotAdded[v] = false;
+        counterNotAddedNode -= 1;
 
-        Set<Edge> set = vertexes.get(v);
-        if (set == null)
+        List<Edge> list = vertexes[v];
+        if (list == null)
             return;
 
-        for (Edge edge : set) {
-            if (nodeNotAdded.contains(edge.getEnd()))
+        for (Edge edge : list) {
+            if (nodeNotAdded[edge.getEnd()])
                 edges.add(edge);
         }
     }
@@ -122,9 +124,9 @@ public class ExpensiveNetwork {
             V = Integer.parseInt(tokenizer.nextToken());
             E = Integer.parseInt(tokenizer.nextToken());
 
-            vertexes = new HashMap<>();
+            vertexes = new List[V + 1];
             edges = new PriorityQueue<>();
-            nodeNotAdded = new HashSet<>();
+            nodeNotAdded = new boolean[V + 1];
 
             for (int i = 0; i < E; i++) {
                 tokenizer = new StringTokenizer(reader.readLine());
@@ -133,40 +135,33 @@ public class ExpensiveNetwork {
                 int v2 = Integer.parseInt(tokenizer.nextToken());
                 int weight = Integer.parseInt(tokenizer.nextToken());
 
-                putWay(v1, v2, weight);
+                if (v1 != v2)
+                    putWay(v1, v2, weight);
             }
         }
     }
 
     private static void putWay(int v1, int v2, int weight) {
-        nodeNotAdded.add(v1);
-        nodeNotAdded.add(v2);
-
-        if (!vertexes.containsKey(v1) && !vertexes.containsKey(v2)) {
-            Set<Edge> set1 = new HashSet<>();
-            Set<Edge> set2 = new HashSet<>();
-            set1.add(new Edge(v2, weight));
-            set2.add(new Edge(v1, weight));
-            vertexes.put(v1, set1);
-            vertexes.put(v2, set2);
-        } else if (vertexes.containsKey(v1) && !vertexes.containsKey(v2)) {
-            vertexes.get(v1).add(new Edge(v2, weight));
-            Set<Edge> set2 = new HashSet<>();
-            set2.add(new Edge(v1, weight));
-            vertexes.put(v2, set2);
-        } else if (!vertexes.containsKey(v1) && vertexes.containsKey(v2)) {
-            vertexes.get(v2).add(new Edge(v1, weight));
-            Set<Edge> set1 = new HashSet<>();
-            set1.add(new Edge(v2, weight));
-            vertexes.put(v1, set1);
-        } else {
-            vertexes.get(v1).add(new Edge(v2, weight));
-            vertexes.get(v2).add(new Edge(v1, weight));
+        if (!nodeNotAdded[v1]) {
+            nodeNotAdded[v1] = true;
+            counterNotAddedNode += 1;
         }
+        if (!nodeNotAdded[v2]) {
+            nodeNotAdded[v2] = true;
+            counterNotAddedNode += 1;
+        }
+
+        if (vertexes[v1] == null)
+            vertexes[v1] = new ArrayList<>();
+        if (vertexes[v2] == null)
+            vertexes[v2] = new ArrayList<>();
+
+        vertexes[v1].add(new Edge(v2, weight));
+        vertexes[v2].add(new Edge(v1, weight));
     }
 
     private static void output() {
-        if (!nodeNotAdded.isEmpty() || V - 1 > E)
+        if (counterNotAddedNode > 0 || V - 1 > E)
             System.out.println("Oops! I did it again");
         else
             System.out.println(maxSpanningTree);
