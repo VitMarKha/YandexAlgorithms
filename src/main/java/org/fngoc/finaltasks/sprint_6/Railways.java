@@ -10,9 +10,8 @@ package org.fngoc.finaltasks.sprint_6;
 развернуть один из жд путей в обратную сторону.
 
 -- ДОКАЗАТЕЛЬСТВО КОРРЕКТНОСТИ --
-Считываю ребра графа в список смежности, контейнера map, где
-ключом является номер вершины, а значением массив ребер,
-который хранит номера городов.
+Считываю ребра графа в список смежности, массива листов, где
+по индексу массива (номер вершины) находятся все его ребра.
 
 Если дорога R, то разворачиваю ребро.
 
@@ -42,7 +41,7 @@ public class Railways {
 
     private static int capital;
     private static int[] colors;
-    private static Map<Integer, List<Integer>> vertexes;
+    private static List<Integer>[] vertexes;
 
     public static void main(String[] args) throws IOException {
         input();
@@ -77,7 +76,7 @@ public class Railways {
                 colors[currentCity] = 1;
                 stack.push(currentCity);
 
-                List<Integer> roads = vertexes.get(currentCity);
+                List<Integer> roads = vertexes[currentCity];
 
                 if (roads == null)
                     continue;
@@ -99,12 +98,15 @@ public class Railways {
             StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
             capital = Integer.parseInt(tokenizer.nextToken());
 
-            vertexes = new HashMap<>();
+            vertexes = new List[capital];
             colors = new int[capital + 1];
 
             for (int i = 0; i < capital - 1; i++) {
                 tokenizer = new StringTokenizer(reader.readLine());
                 String line = tokenizer.nextToken();
+
+                if (vertexes[i] == null)
+                    vertexes[i] = new ArrayList<>();
 
                 for (int j = 0; j < line.length(); j++) {
                     putRailway(line.charAt(j), i, j);
@@ -114,22 +116,12 @@ public class Railways {
     }
 
     private static void putRailway(char railway, int cityFrom, int cityOn) {
-        if (railway == 'B') {
-            if (vertexes.containsKey(cityFrom))
-                vertexes.get(cityFrom).add(cityFrom + cityOn + 1);
-            else {
-                List<Integer> list = new ArrayList<>();
-                list.add(cityFrom + cityOn + 1);
-                vertexes.put(cityFrom, list);
-            }
-        } else if (railway == 'R') {
-            if (vertexes.containsKey(cityFrom + cityOn + 1))
-                vertexes.get(cityFrom + cityOn + 1).add(cityFrom);
-            else {
-                List<Integer> list = new ArrayList<>();
-                list.add(cityFrom);
-                vertexes.put(cityFrom + cityOn + 1, list);
-            }
+        if (railway == 'B')
+            vertexes[cityFrom].add(cityFrom + cityOn + 1);
+        else if (railway == 'R') {
+            if (vertexes[cityFrom + cityOn + 1] == null)
+                vertexes[cityFrom + cityOn + 1] = new ArrayList<>();
+            vertexes[cityFrom + cityOn + 1].add(cityFrom);
         }
     }
 }
