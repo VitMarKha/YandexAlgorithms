@@ -7,7 +7,7 @@ import java.util.*;
 
 public class App {
 
-    public static void main( String[] args ) throws Exception {
+    public static void main(String[] args) throws Exception {
         System.out.println("Start program!\n");
 
         //Тренировка
@@ -91,6 +91,8 @@ public class App {
 //        Solution.connectivityComponents();
 //        Solution.BFS();
 //        Solution.maxDistance();
+//        Solution.greedyAlgorith();
+//        Solution.schedule();
 
 //        attractions();
 

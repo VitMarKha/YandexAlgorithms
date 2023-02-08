@@ -4,8 +4,161 @@ import java.io.*;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Solution {
+
+    ///////////////////Расписание///////////////////
+    private static class Gap implements Comparable<Gap>{
+        private Double start;
+        private Double end;
+
+        public Gap(Double start, Double end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        @Override
+        public int compareTo(Gap o) {
+            if (this.end.equals(o.end))
+                return (int) (this.start - o.start);
+            return (int) (this.end - o.end);
+        }
+
+        @Override
+        public String toString() {
+            String resultStr;
+            double a = start;
+            long b = (long) a;
+
+            if ((a - (double) b) > 0)
+                resultStr = String.valueOf(start);
+            else
+                resultStr = String.valueOf(start.intValue());
+
+            resultStr += " ";
+
+            a = end;
+            b = (long) a;
+
+            if ((a - (double) b) > 0)
+                resultStr += String.valueOf(end);
+            else
+                resultStr += end.intValue();
+
+            return resultStr;
+        }
+    }
+
+    private static Gap[] gaps;
+    private static Stack<Gap> stackGaps;
+
+    public static void schedule() throws IOException {
+        scheduleInput();
+        Arrays.sort(gaps);
+        stackGaps = new Stack<>();
+        stackGaps.push(gaps[0]);
+
+        for (int i = 1; i < gaps.length; i++) {
+            if (stackGaps.peek().end <= gaps[i].start)
+                stackGaps.push(gaps[i]);
+        }
+        scheduleOutput();
+    }
+
+    private static void scheduleInput() throws IOException {
+        final int N;
+
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = Integer.parseInt(reader.readLine());
+            StringTokenizer tokenizer;
+
+            gaps = new Gap[N];
+
+            for (int i = 0; i < N; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                double gapStart = Double.parseDouble(tokenizer.nextToken());
+                double gapEnd = Double.parseDouble(tokenizer.nextToken());
+
+                gaps[i] = new Gap(gapStart, gapEnd);
+            }
+        }
+    }
+
+    private static void scheduleOutput() {
+        System.out.println(stackGaps.size());
+        for (Gap gap : stackGaps) {
+            System.out.println(gap);
+        }
+    }
+
+    ///////////////////Биржа///////////////////
+    private static int[] daysPrice;
+    private static boolean purchase;
+    private static int priceNow;
+    private static int result;
+
+    public static void greedyAlgorith(String[] args) throws IOException {
+        greedyAlgorithmInput();
+        greedyAlgorithmProgram();
+        greedyAlgorithmOutput();
+    }
+
+    private static void greedyAlgorithmProgram() {
+        if (isSorted(daysPrice)) {
+            result = daysPrice[daysPrice.length - 1] - daysPrice[0];
+            return;
+        }
+
+        for (int i = 0; i < daysPrice.length; i++) {
+            if (!purchase || priceNow > daysPrice[i]) {
+                priceNow = daysPrice[i];
+                purchase = true;
+            } else {
+                if (i + 1 == daysPrice.length) {
+                    if (daysPrice[daysPrice.length - 2] < daysPrice[daysPrice.length - 1])
+                        result += daysPrice[daysPrice.length - 1] - daysPrice[daysPrice.length - 2];
+                } else {
+                    if (priceNow <= daysPrice[i] && daysPrice[i] >= daysPrice[i + 1]) {
+                        result += daysPrice[i] - priceNow;
+                        purchase = false;
+                    } else if (priceNow <= daysPrice[i + 1]) {
+                        result += daysPrice[i + 1] - priceNow;
+                        purchase = false;
+                    }
+                }
+
+            }
+        }
+    }
+
+    public static boolean isSorted(int[] a) {
+        if (a == null || a.length <= 1)
+            return true;
+
+        return IntStream.range(0, a.length - 1).noneMatch(i -> a[i] > a[i + 1]);
+    }
+
+    private static void greedyAlgorithmInput() throws IOException {
+        final int N;
+
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            N = Integer.parseInt(reader.readLine());
+            StringTokenizer tokenizer;
+
+            daysPrice = new int[N];
+
+            tokenizer = new StringTokenizer(reader.readLine());
+            for (int i = 0; i < N; i++) {
+                int price = Integer.parseInt(tokenizer.nextToken());
+                daysPrice[i] = price;
+            }
+        }
+    }
+
+    private static void greedyAlgorithmOutput() {
+        System.out.println(result);
+    }
 
     ///////////////////Максимальное расстояние///////////////////
     private static int V5;
