@@ -93,6 +93,8 @@ public class App {
 //        Solution.maxDistance();
 //        Solution.greedyAlgorith();
 //        Solution.schedule();
+//        Solution.counting();
+//        Solution.jumpingStairs();
 
 //        attractions();
 

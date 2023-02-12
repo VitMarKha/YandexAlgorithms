@@ -8,6 +8,44 @@ import java.util.stream.IntStream;
 
 public class Solution {
 
+    ///////////////////Прыжки по лестнице///////////////////
+    private static int K;
+    private static int N_STEPS;
+    private static int MODULE = 1_000_000_007;
+
+    private static int[] dp;
+
+    public static void jumpingStairs() throws IOException {
+        //input
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            N_STEPS = Integer.parseInt(tokenizer.nextToken());
+            K = Integer.parseInt(tokenizer.nextToken());
+
+            dp = new int[N_STEPS + 1];
+        }
+
+        //program
+        long result = countSteps(N_STEPS);
+
+        //output
+        System.out.println(result);
+    }
+
+    private static long countSteps(int number) {
+        if (number < 1)
+            return 0;
+        else if (number == 1)
+            return 1;
+        else if (dp[number] == 0) {
+            for (int i = 1; i <= K; i++) {
+                dp[number] += countSteps(number - i);
+                dp[number] %= MODULE;
+            }
+        }
+        return dp[number] % MODULE;
+    }
+
     ///////////////////Золотая лихорадка///////////////////
     private static class Heap implements Comparable<Heap>{
         private final long price;
@@ -28,7 +66,7 @@ public class Solution {
     private static Heap[] heaps;
     private static long resultCountPrice;
 
-    private static void counting() throws IOException {
+    public static void counting() throws IOException {
         inputCounting();
         Arrays.sort(heaps);
 
