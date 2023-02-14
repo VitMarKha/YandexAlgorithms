@@ -95,10 +95,145 @@ public class App {
 //        Solution.schedule();
 //        Solution.counting();
 //        Solution.jumpingStairs();
+        fieldWithFlowers();
 
 //        attractions();
 
         System.out.println("\nEnd program!");
+    }
+
+    private static int[][] matrix;
+    private static int[][] dp;
+    private static int N;
+    private static int M;
+    private static int countFlowersUp = 0;
+    private static int countFlowersRight= 0;
+
+    public static void fieldWithFlowers() throws IOException {
+        input();
+
+        int x = N;
+        int y = 1;
+
+        if (matrix[x][y] == 1) {
+            countFlowersUp += 1;
+            dp[x][y] = countFlowersUp;
+        }
+
+        while (true) {
+            if (matrix[x - 1][y] == -1 && y == M)
+                break;
+
+            if (matrix[x - 1][y] == 1) {
+                x -= 1;
+                countFlowersUp += 1;
+                dp[x][y] = countFlowersUp;
+            } else if (matrix[x][y + 1] == 1) {
+                y += 1;
+                countFlowersUp += 1;
+                dp[x][y] = countFlowersUp;
+            } else {
+                if (matrix[x - 1][y] != -1 && matrix[x][y + 1] != -1) {
+                    x -= 1;
+                    dp[x][y] = countFlowersUp;
+                } else if (matrix[x - 1][y] == -1 && matrix[x][y + 1] != -1) {
+                    y += 1;
+                    dp[x][y] = countFlowersUp;
+                } else if (matrix[x - 1][y] != -1 && matrix[x][y + 1] == -1) {
+                    x -= 1;
+                    dp[x][y] = countFlowersUp;
+                }
+            }
+        }
+
+//        System.out.println();
+//        for (int i = 0; i < dp.length; i++) {
+//            for (int j = 0; j < dp[i].length; j++) {
+//                System.out.print(dp[i][j]);
+//            }
+//            System.out.println();
+//        }
+//        System.out.println();
+
+        dp = new int[N + 1][M + 1];
+        x = N;
+        y = 1;
+
+        while (true) {
+            if (matrix[x - 1][y] == -1 && y == M)
+                break;
+
+            if (y != M && matrix[x][y + 1] == 1) {
+                y += 1;
+                countFlowersRight += 1;
+                dp[x][y] = countFlowersRight;
+            } else if (matrix[x - 1][y] == 1) {
+                x -= 1;
+                countFlowersRight += 1;
+                dp[x][y] = countFlowersRight;
+            } else {
+                if (y != M && matrix[x - 1][y] != -1 && matrix[x][y + 1] != -1) {
+                    y += 1;
+                    dp[x][y] = countFlowersRight;
+                } else if (matrix[x - 1][y] == -1 && matrix[x][y + 1] != -1) {
+                    y += 1;
+                    dp[x][y] = countFlowersRight;
+                } else if (y == M || matrix[x - 1][y] != -1 && matrix[x][y + 1] == -1) {
+                    x -= 1;
+                    dp[x][y] = countFlowersRight;
+                }
+            }
+        }
+
+//        System.out.println();
+//        for (int i = 0; i < dp.length; i++) {
+//            for (int j = 0; j < dp[i].length; j++) {
+//                System.out.print(dp[i][j]);
+//            }
+//            System.out.println();
+//        }
+//
+//        System.out.println();
+//        System.out.println("Up: " + countFlowersUp);
+//        System.out.println("Right: " + countFlowersRight);
+//        for (int i = 0; i < matrix.length; i++) {
+//            for (int j = 0; j < matrix[i].length; j++) {
+//                System.out.print(matrix[i][j]);
+//            }
+//            System.out.println();
+//        }
+
+        if (countFlowersUp > countFlowersRight)
+            System.out.println(countFlowersUp);
+        else
+            System.out.println(countFlowersRight);
+    }
+
+    private static void input() throws IOException {
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            N = Integer.parseInt(tokenizer.nextToken());
+            M = Integer.parseInt(tokenizer.nextToken());
+
+            matrix = new int[N + 1][M + 1];
+            dp = new int[N + 1][M + 1];
+
+            for (int i = 0; i < M; i++) {
+                matrix[0][i + 1] = -1;
+            }
+
+            for (int i = 0; i < N; i++) {
+                matrix[i + 1][0] = -1;
+            }
+
+            for (int i = 0; i < N; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                String line = tokenizer.nextToken();
+                for (int j = 0; j < M; j++) {
+                    matrix[i + 1][j + 1] = Integer.parseInt(String.valueOf(line.charAt(j)));
+                }
+            }
+        }
     }
 
     private static int V; //вершины
