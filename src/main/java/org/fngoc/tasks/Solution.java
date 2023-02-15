@@ -8,6 +8,50 @@ import java.util.stream.IntStream;
 
 public class Solution {
 
+    ///////////////////Поле с цветочками///////////////////
+    private static int N2;
+    private static int M2;
+    private static int[][] dp2;
+    private static int[][] field;
+
+    public static void fieldWithFlowers() throws IOException {
+        input();
+
+        dp2 = new int[N2 + 1][M2 + 1];
+        dp2[0][0] = field[0][0];
+
+        for (int i = 1; i < N2 + 1; i++) {
+            for (int j = 1; j < M2 + 1; j++) {
+                dp2[i][j] = Math.max(dp2[i - 1][j], dp2[i][j - 1]) + field[i - 1][j - 1];
+            }
+        }
+        System.out.println(dp2[N2][M2]);
+    }
+
+    private static void input() throws IOException {
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            N2 = Integer.parseInt(tokenizer.nextToken());
+            M2 = Integer.parseInt(tokenizer.nextToken());
+
+            field = new int[N2][M2];
+
+            for (int i = 0; i < N2; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                String line = tokenizer.nextToken();
+                for (int j = 0; j < M2; j++) {
+                    field[i][j] = Integer.parseInt(String.valueOf(line.charAt(j)));
+                }
+            }
+
+            for (int i = 0; i < field.length / 2; i++) {
+                int[] tmp = field[i];
+                field[i] = field[field.length - i - 1];
+                field[field.length - i - 1] = tmp;
+            }
+        }
+    }
+
     ///////////////////Прыжки по лестнице///////////////////
     private static int K;
     private static int N_STEPS;
