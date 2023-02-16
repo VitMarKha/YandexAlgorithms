@@ -1,4 +1,4 @@
-package org.fngoc.finaltasks.sprint_5;
+package org.fngoc.sprint_5.finale;
 
 /*
 -- ПРИНЦИП РАБОТЫ --

@@ -1,4 +1,4 @@
-package org.fngoc.finaltasks.sprint_1;
+package org.fngoc.sprint_1.finale;
 
 import java.io.*;
 import java.util.*;

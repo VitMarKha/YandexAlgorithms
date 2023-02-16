@@ -1,4 +1,4 @@
-package org.fngoc.finaltasks.sprint_2;
+package org.fngoc.sprint_2.finale;
 /*
 -- ПРИНЦИП РАБОТЫ --
 Я реализовал Dec в основе которого лежит кольцевой буфер.
