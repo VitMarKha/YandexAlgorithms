@@ -95,12 +95,14 @@ public class App {
 //        Solution.schedule();
 //        Solution.counting();
 //        Solution.jumpingStairs();
-        Solution.fieldWithFlowers();
+//        Solution.fieldWithFlowers();
+//        Solution.complexFieldFlowers();
 
 //        attractions();
 
         System.out.println("\nEnd program!");
     }
+
 
     private static int V; //вершины
     private static int E; //ребра

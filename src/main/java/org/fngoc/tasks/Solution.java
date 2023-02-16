@@ -8,6 +8,89 @@ import java.util.stream.IntStream;
 
 public class Solution {
 
+    ///////////////////Сложное поле с цветочками///////////////////
+    private static int N3;
+    private static int M3;
+    private static int[][] dp3;
+    private static int[][] dpSumWay;
+    private static int[][] field2;
+
+    public static void complexFieldFlowers() throws IOException {
+        inputComplexFieldFlowers();
+
+        dp3 = new int[N3 + 1][M3 + 1];
+        dpSumWay = new int[N3][M3];
+
+        dp3[0][0] = field2[0][0];
+        dpSumWay[0][0] = field2[0][0];
+
+        for (int i = 1; i < N3 + 1; i++) {
+            for (int j = 1; j < M3 + 1; j++) {
+                int sum = Math.max(dp3[i - 1][j], dp3[i][j - 1]) + field[i - 1][j - 1];
+                dp3[i][j] = sum;
+                dpSumWay[i - 1][j - 1] = sum;
+            }
+        }
+        reverseArray(dpSumWay);
+
+        List<Character> way = new ArrayList<>();
+        int i = 0;
+        int j = M3 - 1;
+        while (i + 1 != N || j != 0) {
+            if (j != 0 &&i + 1 != N ) {
+                if (dpSumWay[i + 1][j] > dpSumWay[i][j - 1]) {
+                    way.add('U');
+                    i += 1;
+                } else {
+                    way.add('R');
+                    j -= 1;
+                }
+            } else if (j == 0) {
+                way.add('U');
+                i += 1;
+            } else if (i + 1 == N) {
+                way.add('R');
+                j -= 1;
+            }
+        }
+        outputComplexFieldFlowers(way);
+    }
+
+    private static void outputComplexFieldFlowers(List<Character> way) {
+        System.out.println(dp3[N3][M3]);
+
+        for (int i = way.size() - 1; i >= 0; i--) {
+            System.out.print(way.get(i));
+        }
+    }
+
+    private static void reverseArray(int[][] arr) {
+        for (int i = 0; i < arr.length / 2; i++) {
+            int[] tmp = arr[i];
+            arr[i] = arr[arr.length - i - 1];
+            arr[arr.length - i - 1] = tmp;
+        }
+    }
+
+    private static void inputComplexFieldFlowers() throws IOException {
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            N3 = Integer.parseInt(tokenizer.nextToken());
+            M3 = Integer.parseInt(tokenizer.nextToken());
+
+            field = new int[N3][M3];
+
+            for (int i = 0; i < N3; i++) {
+                tokenizer = new StringTokenizer(reader.readLine());
+                String line = tokenizer.nextToken();
+                for (int j = 0; j < M3; j++) {
+                    field2[i][j] = Integer.parseInt(String.valueOf(line.charAt(j)));
+                }
+            }
+            reverseArray(field2);
+        }
+    }
+
     ///////////////////Поле с цветочками///////////////////
     private static int N2;
     private static int M2;
