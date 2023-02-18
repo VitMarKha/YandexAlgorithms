@@ -4,6 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/*
+ * B. Ловкость рук
+ */
+
 public class SleightOfHand {
 
     private static final Integer LEN_Y = 4; //длинна поля

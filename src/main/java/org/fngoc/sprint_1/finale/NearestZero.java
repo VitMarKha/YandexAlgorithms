@@ -3,6 +3,10 @@ package org.fngoc.sprint_1.finale;
 import java.io.*;
 import java.util.*;
 
+/*
+ * A. Ближайший ноль
+ */
+
 public class NearestZero {
 
     public static void main(String[] args) throws IOException {
