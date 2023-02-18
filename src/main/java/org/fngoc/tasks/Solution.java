@@ -8,6 +8,122 @@ import java.util.stream.IntStream;
 
 public class Solution {
 
+    ///////////////////Гороскопы///////////////////
+    private static int N4;
+    private static int M4;
+    private static int[] firstSubsequence;
+    private static int[] secondSubsequence;
+    private static List<Integer> indexesFirstSubsequence;
+    private static List<Integer> indexesSecondSubsequence;
+    private static int[][] dp4;
+
+    public static void horoscopes() throws IOException {
+        inputHoroscopes();
+
+        dp4 = new int[N4 + 1][M4 + 1];
+
+        for (int i = 1; i <= N4; i++) {
+            for (int j = 1; j <= M4; j++) {
+                if (firstSubsequence[i] == secondSubsequence[j])
+                    dp4[i][j] = dp4[i - 1][j - 1] + 1;
+                else
+                    dp4[i][j] = Math.max(dp4[i - 1][j], dp4[i][j - 1]);
+            }
+        }
+
+        int i = firstSubsequence.length - 1;
+        int j = secondSubsequence.length - 1;
+        indexesFirstSubsequence = new ArrayList<>();
+        indexesSecondSubsequence = new ArrayList<>();
+        while (i > 0 && j > 0) {
+            if (firstSubsequence[i] == secondSubsequence[j]) {
+                indexesFirstSubsequence.add(i);
+                indexesSecondSubsequence.add(j);
+                i -= 1;
+                j -= 1;
+            } else {
+                if (dp4[i][j] == dp4[i - 1][j])
+                    i -= 1;
+                else
+                    j -= 1;
+            }
+        }
+        outputHoroscopes();
+    }
+
+    private static void outputHoroscopes() {
+        System.out.println(dp4[N4][M4]);
+
+        for (int i = indexesFirstSubsequence.size() - 1; i >= 0; i--)
+            System.out.print(indexesFirstSubsequence.get(i) + " ");
+        System.out.println();
+        for (int i = indexesSecondSubsequence.size() - 1; i >= 0; i--)
+            System.out.print(indexesSecondSubsequence.get(i) + " ");
+    }
+
+    private static void inputHoroscopes() throws IOException {
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            N4 = Integer.parseInt(tokenizer.nextToken());
+
+            tokenizer = new StringTokenizer(reader.readLine());
+            firstSubsequence = new int[N4 + 1];
+            for (int i = 1; i < N4 + 1; i++) {
+                firstSubsequence[i] = Integer.parseInt(tokenizer.nextToken());
+            }
+
+            tokenizer = new StringTokenizer(reader.readLine());
+            M4 = Integer.parseInt(tokenizer.nextToken());
+
+            tokenizer = new StringTokenizer(reader.readLine());
+            secondSubsequence = new int[M4 + 1];
+            for (int i = 1; i < M4 + 1; i++) {
+                secondSubsequence[i] = Integer.parseInt(tokenizer.nextToken());
+            }
+        }
+    }
+
+    ///////////////////Золото лепреконов///////////////////
+    private static int N5;
+    private static int M5;
+    private static int[] weight;
+    private static int[][] dp5;
+
+    public static void leprechaunGold() throws IOException {
+        inputLeprechaunGold();
+
+        dp5 = new int[N5 + 1][M5 + 1];
+
+        for (int i = 1; i <= N5; i++) {
+            for (int j = 1; j <= M5; j++) {
+                if (j - weight[i] < 0)
+                    dp5[i][j] = dp5[i - 1][j];
+                else
+                    dp5[i][j] = Math.max(dp5[i - 1][j], weight[i] + dp5[i - 1][j - weight[i]]);
+            }
+        }
+        outputLeprechaunGold();
+    }
+
+    private static void outputLeprechaunGold() {
+        System.out.println(dp5[N5][M5]);
+    }
+
+    private static void inputLeprechaunGold() throws IOException {
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+            N5 = Integer.parseInt(tokenizer.nextToken());
+            M5 = Integer.parseInt(tokenizer.nextToken());
+
+            weight = new int[N5 + 1];
+
+            tokenizer = new StringTokenizer(reader.readLine());
+            for (int i = 1; i < N5 + 1; i++) {
+                weight[i] = Integer.parseInt(tokenizer.nextToken());
+            }
+        }
+    }
+
     ///////////////////Сложное поле с цветочками///////////////////
     private static int N3;
     private static int M3;

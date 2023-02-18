@@ -97,6 +97,8 @@ public class App {
 //        Solution.jumpingStairs();
 //        Solution.fieldWithFlowers();
 //        Solution.complexFieldFlowers();
+        Solution.leprechaunGold();
+        Solution.horoscopes();
 
 //        attractions();
 
