@@ -8,22 +8,21 @@ import java.util.StringTokenizer;
 
 public class SameAmounts {
 
-    private static int N;
     private static int[] points;
 
     public static void main(String[] args) throws IOException {
         input();
-        output(isTwoSum());
+        output(isSameAmounts());
     }
 
-    private static boolean isTwoSum() {
+    private static boolean isSameAmounts() {
         int sum = Arrays.stream(points).sum();
 
         if (sum % 2 != 0)
             return false;
 
         int halfSum = sum / 2;
-        boolean[] dp = new boolean[N + 1];
+        boolean[] dp = new boolean[halfSum + 1];
         dp[0] = true;
 
         for (int point : points) {
@@ -32,32 +31,10 @@ public class SameAmounts {
             if (point > halfSum)
                 return false;
 
-            for (int j = halfSum; j > point - 1; j--) {
-                dp[j] = dp[j - point];
-                if (dp[dp.length - 1])
-                    return true;
-            }
+            for (int j = halfSum; j > point - 1; j--)
+                dp[j] = dp[j - point] || dp[j];
         }
         return dp[dp.length - 1];
-
-
-//        int halfSum = sum / 2;
-//        boolean[] dp = new boolean[halfSum + 1];
-//        boolean[] dpPrev = new boolean[halfSum + 1];
-//
-//        for (int i = 1; i < N + 1; i++) {
-//            for (int j = 1; j < halfSum + 1; j++) {
-//                dp[j] = dpPrev[j];
-//
-//                if (j == points[i - 1])
-//                    dp[j] = true;
-//                if (j > points[i - 1] && dpPrev[j - points[i - 1]])
-//                    dp[j] = true;
-//            }
-//            dpPrev = dp;
-//            dp = new boolean[halfSum + 1];
-//        }
-//        return dpPrev[halfSum];
     }
 
     private static void output(boolean isTrue) {
@@ -70,14 +47,13 @@ public class SameAmounts {
     private static void input() throws IOException {
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
-            N = Integer.parseInt(tokenizer.nextToken());
+            int n = Integer.parseInt(tokenizer.nextToken());
 
-            points = new int[N];
+            points = new int[n];
 
             tokenizer = new StringTokenizer(reader.readLine());
-            for (int i = 0; i < N; i++) {
+            for (int i = 0; i < n; i++)
                 points[i] = Integer.parseInt(tokenizer.nextToken());
-            }
         }
     }
 }
