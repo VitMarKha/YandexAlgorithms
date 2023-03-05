@@ -25,21 +25,20 @@ package org.fngoc.sprint_8.finale;
 
 -- ВРЕМЕННАЯ СЛОЖНОСТЬ --
 N - кол-во строк.
-L - длинна строк.
+L - длина самой длинной распакованной строки.
 
 Для распаковки строк нам нужно пройтись по всем строка O(N) и по всем их элементам
-это O(L). В то же время мы умножаем элементы строки на заданные цифры в строке,
-что увеличивает проход по самой строке во время умножения O(K), где K - коэффициент того,
-как часто нам встречаются цифры. Получается временная сложность O(N * L * K).
+это O(L). Получается временная сложность O(N * L).
 
 Так же происходил поиск префикса в каждой строке, нужно пройтись по всем строкам
 и сравнить от начала их символы, это O(N * L).
 
-Получается средняя временная сложность O(N^2 * L^2 * K).
+Получается средняя временная сложность O(N * L).
+Константы убираем.
 
 -- ПРОСТРАНСТВЕННАЯ СЛОЖНОСТЬ --
 В памяти мы постоянно держим строку префикса. Ее максимальная
-длинна может быть максимальной длинной одинаковых строк, то есть O(L).
+длина может быть максимальной длиной одинаковых строк, то есть O(L).
 
 Так же мы используем стек во время рекурсии, в среднем если цифры в
 прочитанной строке распределены равномерно, память будет занимать O(logL).
@@ -73,23 +72,23 @@ public class PackedPrefix {
 
             for (int i = 0; i < n; i++) {
                 String line = unpacked(reader.readLine());
-                prefix = findNewPrefix(line);
+                prefix = line.substring(0, findNewPrefix(line));
             }
         }
     }
 
-    private static String findNewPrefix(String line) {
+    private static int findNewPrefix(String line) {
         if (prefix == null)
-            return line;
+            return line.length();
 
-        StringBuilder newPrefix = new StringBuilder();
+        int len = 0;
         for (int i = 0; i < line.length(); i++) {
             if (i < prefix.length() && prefix.charAt(i) == line.charAt(i))
-                newPrefix.append(line.charAt(i));
+                len += 1;
             else
                 break;
         }
-        return newPrefix.toString();
+        return len;
     }
 
     private static String unpacked(String line) {
