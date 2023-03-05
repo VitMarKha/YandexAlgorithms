@@ -72,12 +72,12 @@ public class PackedPrefix {
 
             for (int i = 0; i < n; i++) {
                 String line = unpacked(reader.readLine());
-                prefix = line.substring(0, findNewPrefix(line));
+                prefix = line.substring(0, findEndNewPrefix(line));
             }
         }
     }
 
-    private static int findNewPrefix(String line) {
+    private static int findEndNewPrefix(String line) {
         if (prefix == null)
             return line.length();
 
