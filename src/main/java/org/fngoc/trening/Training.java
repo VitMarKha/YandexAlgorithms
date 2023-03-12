@@ -1,4 +1,4 @@
-package org.fngoc;
+package org.fngoc.trening;
 
 import java.io.BufferedReader;
 import java.io.IOException;
